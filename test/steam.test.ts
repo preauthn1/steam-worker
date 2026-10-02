@@ -118,6 +118,14 @@ test('price overview takes median from median_price', async () => {
   assert.equal(u.searchParams.get('appid'), '730');
 });
 
+test('price overview preserves upstream rate limiting', async () => {
+  const f = fake([() => new Response('', { status: 429 })]);
+  await assert.rejects(
+    OPERATIONS.get('public.market.get_price_overview')!.run(ctx(f.t), { obj: 'Synthetic Item' }),
+    (e: unknown) => e instanceof OpError && e.status === 429 && e.code === 'upstream_rate_limited',
+  );
+});
+
 test('argument validation and cached catalog', () => {
   const spec = OPERATIONS.get('public.market.get_price_overview')!;
   assert.deepEqual(validateArgs(spec, { obj: 'x' }), { obj: 'x' });

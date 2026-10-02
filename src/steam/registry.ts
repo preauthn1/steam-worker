@@ -27,6 +27,7 @@ async function priceOverview(ctx: OpContext, args: Record<string, Json>): Promis
   url.search = new URLSearchParams({ country: 'US', currency: String(currency), appid: String(app), market_hash_name: name }).toString();
   const res = await (ctx.transport as SteamTransport).request('GET', url, { headers: typeof args.if_modified_since === 'string' ? { 'If-Modified-Since': args.if_modified_since } : undefined });
   if (res.status === 304) return { not_modified: true };
+  if (res.status === 429) throw new OpError(429, 'upstream_rate_limited');
   if (res.status >= 400) throw new OpError(502, `upstream_http_${res.status}`);
   let data: Record<string, unknown>;
   try { data = JSON.parse(text.decode(res.body)) as Record<string, unknown>; } catch { throw new OpError(502, 'upstream_invalid_response'); }
