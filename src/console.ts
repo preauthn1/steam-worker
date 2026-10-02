@@ -7,7 +7,7 @@ const qrLibrary = "/* \n * QR Code generator library (TypeScript)\n * \n * Copyr
 const script = qrLibrary + String.raw`
 'use strict';
 const $ = id => document.getElementById(id);
-let token = '', registry = [], activeGroup = 'login', pendingWrite = null, retryWrite = null, loginHandle = '', pollController = null, busy = false, generation = 0;
+let token = '', registry = [], activeGroup = 'login', pendingWrite = null, retryWrite = null, loginHandle = '', qrReview = null, pollController = null, busy = false, generation = 0;
 const secretKey = /password|passwd|secret|token|cookie|authorization|session_id|revocation|envelope|private_key|login_handle|challenge_url|qr_url|qr_challenge|code/i;
 const operationLabels = {
   "account.create": "创建账户",
@@ -16,6 +16,9 @@ const operationLabels = {
   "public.market.get_price_overview": "查看公开市场价格",
   "session.credentials": "使用密码登录",
   "session.qr": "使用二维码登录",
+  "session.qr_inspect": "查看官方客户端扫码请求",
+  "session.qr_approve": "批准官方客户端扫码登录",
+  "session.qr_deny": "拒绝官方客户端扫码登录",
   "session.code": "提交登录验证码",
   "session.poll": "检查登录状态",
   "session.cookies": "更新会话 Cookie",
@@ -46,7 +49,9 @@ const operationLabels = {
   "confirmations.deny_all": "拒绝全部确认事项"
 };
 const fieldLabels = {
-  "account_name": "Steam 账号名",
+  "qr_url": "官方客户端二维码链接",
+  "review_handle": "扫码审核凭据",
+  "account_name": "Steam 账户名",
   "password": "密码",
   "platform": "登录平台",
   "persistence": "保持登录",
@@ -122,6 +127,9 @@ const operationDescriptions = {
   "confirmations.get_all": "读取当前确认事项。遇到未知类型即拒绝处理。不加载 HTML 详情，不隐式更改状态。",
   "confirmations.send_multiple": "仅管理员可明确授权批量处理确认事项。重新读取实际类型和随机校验值；整批事项必须属于类型 2、3、12、13。",
   "session.credentials": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.qr_inspect": "输入官方 Steam 客户端二维码中的链接，读取设备与位置。需先以手机平台登录；此操作不会批准登录。",
+  "session.qr_approve": "批准刚刚检查过的官方客户端登录。需要手机平台会话和您自己的 Steam Guard 共享密钥；仅账号密码不足以完成签名。",
+  "session.qr_deny": "拒绝刚刚检查过的官方客户端登录。审核凭据仅短期有效。",
   "session.qr": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
   "session.code": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
   "session.poll": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
@@ -173,7 +181,7 @@ function scrub(value, depth = 0) {
 function status(message, tone = '') { $('status').textContent = message; $('status').dataset.tone = tone; }
 function accountPath() { const slug = $('account').value.trim(); if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) throw Error('请输入有效的账户标识（字母、数字、连字符或下划线）。'); return '/v1/accounts/' + encodeURIComponent(slug); }
 function cancelPoll() { if (pollController) pollController.abort(); pollController = null; $('stop-poll').disabled = true; }
-function resetChallenge() { cancelPoll(); loginHandle = ''; $('challenge').hidden = true; $('challenge-link').removeAttribute('href'); $('challenge-qr').hidden=true; const canvas=$('challenge-qr'); canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); }
+function resetChallenge() { qrReview=null; cancelPoll(); loginHandle = ''; $('challenge').hidden = true; $('challenge-link').removeAttribute('href'); $('challenge-qr').hidden=true; const canvas=$('challenge-qr'); canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); }
 function setBusy(value) { busy = value; $('run').disabled = value || !$('operation').value; $('connect').disabled = value; $('create-account').disabled = value || !token; $('account-info').disabled = value || !token; $('account').disabled=value; $('operation').disabled=value; $('retry').disabled = value || !retryWrite; }
 async function request(intent, signal) {
   if (!token) throw Error('请先使用 API 令牌连接。');
@@ -204,6 +212,15 @@ function renderQR(url) {
 }
 function authResult(data, operation) {
   const result = data && data.result && typeof data.result === 'object' ? data.result : {};
+  if (operation==='session.qr_inspect') {
+    qrReview={account:$('account').value.trim(),review_handle:result.review_handle,expires_at:result.expires_at};
+    const visible=Object.create(null);
+    for(const k of ['device_friendly_name','ip','geoloc','country','city','state','platform_type','device_trust','version','expires_at','app_type','login_history','requestor_location_mismatch','high_usage_login','requested_persistence'])if(['string','number','boolean'].includes(typeof result[k]))visible[k]=result[k];
+    qrReview.details=visible;
+    $('output').textContent=JSON.stringify({说明:'请核对设备和位置，仅批准您本人正在登录的客户端。',设备信息:visible},null,2);
+    status('扫码请求已读取，请核对设备和位置，再选择批准或拒绝。');return false;
+  }
+  if(operation==='session.qr_approve'||operation==='session.qr_deny'){qrReview=null;$('output').textContent=JSON.stringify(scrub(data),null,2);return false;}
   if (typeof result.login_handle === 'string' && result.login_handle.length <= 512) loginHandle = result.login_handle;
   const url = safeChallengeURL(result.challenge_url || result.qr_url || result.qr_challenge || (operation==='session.poll' ? $('challenge-link').href : null));
   $('challenge').hidden = !loginHandle && !url;
@@ -243,6 +260,7 @@ function renderFields() {
     input.id = id; input.name = name; input.dataset.argument = name; input.dataset.type = schema.type; input.required = schema.type !== 'boolean' && op.schema.required.includes(name); input.autocomplete='off'; input.spellcheck=false;
     if (schema.type === 'integer') input.step='1'; if (typeof schema.minimum === 'number') input.min=String(schema.minimum); if (typeof schema.maximum === 'number') input.max=String(schema.maximum); if (typeof schema.maxLength === 'number') input.maxLength=schema.maxLength;
     if (name === 'login_handle' && loginHandle) input.value = loginHandle;
+    if(name==='review_handle'&&qrReview&&qrReview.account===$('account').value.trim())input.value=qrReview.review_handle||'';
     if (schema.type === 'boolean') { wrapper.classList.add('field-check'); wrapper.append(input,label); } else wrapper.append(label,input);
     if (schema.description) {const hint=document.createElement('small');hint.id=id+'-help';hint.textContent=fieldHelp[name] || '请按服务器规定的格式填写此参数。';input.setAttribute('aria-describedby',hint.id);wrapper.append(hint);}
     $('fields').append(wrapper);
@@ -272,6 +290,10 @@ function reviewWrite(intent, isRetry = false) {
   $('review-item').textContent = summaryValue(args,/item|asset|listing|offer|confirmation|(^id$)|app|context|obj/i);
   $('review-recipient').textContent = summaryValue(args,/recipient|partner|receiver|destination|trade_url|steam_id/i);
   $('review-arguments').textContent = JSON.stringify(scrub(args),null,2);
+  if(/^session\.qr_(approve|deny)$/.test(intent.name)){
+    if(!qrReview||qrReview.account!==intent.account||qrReview.review_handle!==args.review_handle||Date.now()/1000>=qrReview.expires_at){discardPending();throw Error('扫码审核已过期或账户不匹配，请重新查看请求。');}
+    $('review-recipient').textContent=JSON.stringify(qrReview.details,null,2);
+  }
   $('review-warning').textContent = isRetry ? '手动重试：将复用完全相同的原始请求和幂等键。此前的写入可能已经完成。' : '此操作会更改账户或 Steam 状态。授权前请核对账户和所有参数。';
   $('acknowledge').checked = false; $('confirm-write').disabled = true; $('write-dialog').showModal();
 }
@@ -336,6 +358,6 @@ export function consoleHeaders() {
     'Cache-Control': 'no-store',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'no-referrer',
-    'Content-Security-Policy': "default-src 'none'; script-src 'sha256-9aIPOo06MR3NfUD2bIOTWB7aae3GOYXRjdQ7v7XYlR4='; style-src 'sha256-LDLoMSHlq6mId2KKA8zstNjol8My0McIPC/heWQ5r0M='; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+    'Content-Security-Policy': "default-src 'none'; script-src 'sha256-q3OZE1EonIibdFJkzOUoFAgfy90WSxFFthUHs+t2cNw='; style-src 'sha256-LDLoMSHlq6mId2KKA8zstNjol8My0McIPC/heWQ5r0M='; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   };
 }

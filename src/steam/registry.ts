@@ -4,6 +4,7 @@ import { Writer, decode, get } from './protobuf.ts';
 import { callService } from './webapi.ts';
 import { SESSION_OPS } from './session.ts';
 import { AUTHENTICATED_OPS } from './authenticated.ts';
+import { QR_APPROVAL_OPS } from './qr-approval.ts';
 
 const text = new TextDecoder();
 const schema = (properties: Record<string, Record<string, Json>>, required: string[] = []) => ({ type: 'object' as const, additionalProperties: false as const, properties, required });
@@ -41,6 +42,7 @@ const OPS: OperationSpec[] = [
   { name: 'public.market.get_price_overview', scope: 'read', mutating: false, description: 'Public market price overview. Monetary strings are preserved without lossy parsing.', schema: schema({ obj: { type: 'string', maxLength: 500 }, app: { type: 'integer', minimum: 1 }, currency: { type: 'integer', minimum: 1 }, if_modified_since: { type: 'string' } }, ['obj']), run: priceOverview },
   ...SESSION_OPS,
   ...AUTHENTICATED_OPS,
+  ...QR_APPROVAL_OPS,
 ];
 export const OPERATIONS: ReadonlyMap<string, OperationSpec> = new Map(OPS.map(x => [x.name, x]));
 const DESCRIPTIONS: readonly OperationDescription[] = Object.freeze(OPS.map(({ name, scope, mutating, description, schema: specSchema }) => Object.freeze({ name, scope, mutating, description, schema: specSchema })));

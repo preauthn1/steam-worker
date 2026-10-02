@@ -17,6 +17,18 @@ function harness() {
   vm.runInContext(script,context);
   return {element, calls, run:(code:string)=>vm.runInContext(code,context)};
 }
+test('official client QR review binds device metadata and refuses stale local approval',()=>{
+  const h=harness();h.element('account').value='fixture';
+  h.run(`authResult({result:{review_handle:'opaque-review',expires_at:Date.now()/1000+120,device_friendly_name:'Synthetic desktop',country:'XX',ip:'192.0.2.1'}},'session.qr_inspect')`);
+  assert.match(h.element('output').textContent,/Synthetic desktop/);
+  h.run(`reviewWrite({name:'session.qr_approve',account:'fixture',body:{arguments:{review_handle:'opaque-review'}},mutating:true,key:'synthetic'})`);
+  assert.match(h.element('review-recipient').textContent,/Synthetic desktop/);
+  assert.equal(h.element('confirm-write').disabled,true);
+  h.element('cancel-write').listeners.get('click')();
+  assert.throws(()=>h.run(`reviewWrite({name:'session.qr_approve',account:'other',body:{arguments:{review_handle:'opaque-review'}},mutating:true})`));
+  assert.equal(h.calls.length,0);
+});
+
 test('strict CSP matches the exact shipped inline assets',()=>{
   const csp=consoleHeaders()['Content-Security-Policy'];
   for(const [name,asset] of [['script',script],['style',style]]) assert.ok(csp.includes(`${name}-src 'sha256-${createHash('sha256').update(asset!).digest('base64')}'`));
