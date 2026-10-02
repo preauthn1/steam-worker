@@ -1,1 +1,1 @@
-default-src 'none'; script-src 'sha256-i91+3DvK1M23+OSL6KAVW30xvkBsrKMe6Z36RY9d9Uw' 'sha256-s27Wh5svd8B+AUSLw+Z4lqI9/txkSDYOFGy6bL/rGlU'; style-src 'sha256-++b6bzFojp+mtDmhBbhPGISHBhrpQeg3BPPJaF0ezq4'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+default-src 'none'; script-src 'sha256-i91+3DvK1M23+OSL6KAVW30xvkBsrKMe6Z36RY9d9Uw' 'sha256-lfCzQHUpSw39fn/79iEeDM5btOhDYnjL3ClWdNTlhIk'; style-src 'sha256-fetQCjPTkDoIPNw7Vdol6S+VBXLSEyEJ26XM6DlGwYw'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'

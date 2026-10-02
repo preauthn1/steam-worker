@@ -5,17 +5,71 @@
 .upload-label:hover{filter:brightness(1.1)}
 #qr-image{display:block}
 #qr-video{max-width:100%;margin-top:10px;border:1px solid var(--line)}.challenge p{margin:8px 0 12px}.challenge canvas{display:block;max-width:100%;height:auto;background:#fff;margin:16px 0;image-rendering:pixelated}.challenge input{max-width:130px}.challenge a{display:block;overflow-wrap:anywhere;margin:12px 0}.challenge .row{margin-top:12px}[hidden]{display:none!important}.empty{border:1px dashed var(--line);padding:24px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:18px 32px;font-size:12px;color:var(--muted)}dialog{max-width:640px;width:calc(100% - 32px);max-height:90dvh;overflow:auto;border:1px solid #6988a4;border-radius:4px;background:var(--panel);color:var(--text);padding:28px;box-shadow:0 24px 80px #0008}dialog::backdrop{background:#070e18cc}dialog h2{font-size:24px}dialog p{margin:12px 0}dl{display:grid;grid-template-columns:105px minmax(0,1fr);gap:12px;margin:22px 0}dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.ack{display:flex;align-items:start;gap:12px;padding:16px 0;border-top:1px solid var(--line)}.ack label{font-size:14px;line-height:1.65}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.retry-note{font-size:13px;color:var(--muted);margin-top:14px!important}@media(min-width:1600px){.workspace{padding:36px 48px}.workgrid{gap:40px}}@media(max-width:1050px){.layout{grid-template-columns:210px minmax(0,1fr)}.workspace{padding:24px}.workgrid{grid-template-columns:1fr}.result-panel{margin-top:6px}pre{max-height:360px}}@media(max-width:700px){.masthead{padding:18px 16px}.masthead .badge{display:none}.connection{padding:18px 16px}.connection form{grid-template-columns:1fr 1fr}.token-field{grid-column:1/-1}.layout{display:block}aside{padding:20px 16px;border-right:0;border-bottom:1px solid var(--line)}aside h2{margin-bottom:12px}.account-list{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0}.account-actions{display:flex;flex-wrap:wrap}.workspace{padding:24px 16px}.workspace-head{display:block}.workspace-head .badge{display:inline-block;margin-top:12px}h2{font-size:25px}.nav{margin-left:0;margin-right:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:4px}.nav button{padding:10px 5px;font-size:13px}.workgrid{gap:24px}.form-actions button{flex:1}.challenge .row button{flex:1}dialog{padding:20px}dl{grid-template-columns:86px minmax(0,1fr)}.dialog-actions button{flex:1}footer{padding:18px 16px}}@media(prefers-reduced-motion:no-preference){dialog[open]{animation:review-in .16s cubic-bezier(.16,1,.3,1)}@keyframes review-in{from{transform:translateY(8px)}to{transform:translateY(0)}}
+.quick{margin:24px 32px 0;padding:24px 28px;background:linear-gradient(135deg,#1b2a3a,#15202d);border:1px solid var(--line);border-radius:8px}
+.quick-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.quick-steps{margin:0 0 20px;padding-left:22px;color:var(--muted);line-height:1.9}
+.quick-steps li{max-width:70ch}.quick:not(.nocap) .nocap-only{display:none}
+.quick-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+button.big{font-size:17px;padding:14px 28px;min-height:52px}
+.toggle{display:flex;align-items:center;gap:8px;font-weight:400;margin:0;color:var(--muted)}
+.toggle input{width:20px;min-height:20px;margin:0}
+.quick-stage{margin-top:20px}
+#quick-video{width:100%;max-width:520px;border:1px solid var(--line);border-radius:4px;background:#000;display:block}
+.quick-live{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:15px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.dot.scan{background:var(--blue);animation:pulse 1.2s ease-in-out infinite}
+.dot.ok{background:var(--ok)}
+.dot.err{background:var(--danger)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.quick-device{margin-top:18px;padding:16px;background:var(--inset);border:1px solid var(--line);border-radius:4px}
+.quick-device dl{grid-template-columns:96px minmax(0,1fr);gap:8px 12px;margin:0}
+.quick-device .warn{color:var(--danger);font-weight:600;margin-bottom:10px}
+.quick-confirm{margin-top:18px;padding:16px;background:#243447;border:1px solid var(--blue);border-radius:4px}
+.quick-msg{margin-top:16px;min-height:24px;line-height:1.7;overflow-wrap:anywhere}
+.quick-msg[data-tone=error]{color:var(--danger)}
+.quick-msg[data-tone=success]{color:var(--ok)}
+.quick-fallback{margin-top:18px;color:var(--muted)}
+.quick-fallback summary{cursor:pointer;padding:6px 0}
+.quick-fallback .row{margin:12px 0}
+.advanced-wrap{margin:22px 32px 0}
+.advanced-wrap>summary{cursor:pointer;padding:12px 0;color:var(--muted);font-weight:600;border-top:1px solid var(--line)}
+@media(max-width:700px){.quick{margin:16px;padding:18px 16px}.advanced-wrap{margin:16px}.quick-actions{gap:12px}button.big{width:100%}}
+.connection.on form{display:none}.connection.on p{margin-top:0;color:var(--ok)}.connection.on p::before{content:"● ";color:var(--ok)}
+.connection .relink{margin-left:12px;min-height:32px;padding:4px 12px;font-size:13px}
+.toggle.risk{color:#e9c78e}.toggle.risk input{accent-color:#e9a23b}
+.quick-msg:empty{display:none}
+.advanced-wrap>summary{font-weight:500;font-size:14px;word-break:keep-all}
+@media(max-width:700px){.quick-steps{padding-left:18px;line-height:1.7}.quick-fallback{margin-top:14px}}
+#qr-image{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.quick,.connection>*,.advanced-wrap>summary{max-width:820px}.quick{margin-left:auto;margin-right:auto}.connection{display:block}.connection>*{margin-left:auto;margin-right:auto}.advanced-wrap{max-width:none}.advanced-wrap>summary{margin:0 auto}
+.quick-actions{flex-direction:column;align-items:flex-start;gap:14px}
+.upload-label{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border:1px solid var(--line);border-radius:3px;background:#2b4055;cursor:pointer;font-weight:400;margin:0}
+.quick.nocap #quick-start,.quick.nocap .cap-only{display:none}.quick.nocap .quick-fallback>summary{display:none}.quick.nocap .quick-fallback{margin-top:0;color:var(--text)}
+.quick-fallback label.fb{font-weight:600;margin:4px 0 6px;color:var(--text)}
+#quick-url-go{background:var(--action);border-color:#409bcd}
 </style></head><body>
 <a class="skip" href="#workspace">跳转到操作区</a>
 <header class="masthead"><div class="wordmark"><svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 9h22v14H5zM11 9v14M21 9v14M5 16h22" stroke="currentColor" stroke-width="2"/></svg><h1>STEAM WORKER</h1></div><span class="badge">独立账户控制台</span></header>
 <section class="connection" aria-label="API 连接"><form id="connection-form"><div class="token-field"><label for="token">API 访问令牌</label><input id="token" type="password" autocomplete="off" placeholder="粘贴令牌以连接" required></div><button class="primary" id="connect" type="submit">连接</button><button id="disconnect" type="button">断开连接</button></form><p id="connection-state">未连接 · 令牌仅保存在页面内存中，不写入浏览器存储</p></section>
+<section id="quick" class="quick" aria-labelledby="quick-title">
+<div class="quick-head"><h2 id="quick-title">批准桌面客户端登录</h2><span id="quick-acct" class="badge">请先连接</span></div>
+<ol class="quick-steps"><li>在电脑上打开 Steam，停在显示登录二维码的界面</li><li class="cap-only">点击「开始批准登录」，选择共享 Steam 窗口或整个屏幕</li><li class="nocap-only">在 Steam 二维码下方点「复制链接」粘贴到下面，或上传二维码截图</li><li>本页识别并显示登录设备，确认后批准；二维码刷新会自动跟进</li></ol>
+<div class="quick-actions"><button id="quick-start" class="primary big" type="button" disabled>开始批准登录</button><label class="toggle risk"><input id="quick-auto" type="checkbox"> 自动批准（跳过人工核对，仅在你正盯着自己电脑时开启）</label></div>
+<div id="quick-stage" class="quick-stage" hidden><video id="quick-video" playsinline muted></video><div class="quick-live"><span id="quick-dot" class="dot"></span><span id="quick-state">准备中…</span></div></div>
+<div id="quick-device" class="quick-device" hidden></div>
+<div id="quick-confirm" class="quick-confirm" hidden><p id="quick-confirm-text"></p><div class="row"><button id="quick-approve" class="primary" type="button">批准此次登录</button><button id="quick-deny" type="button">拒绝</button></div></div>
+<p id="quick-msg" class="quick-msg" role="status" aria-live="polite"></p>
+<details class="quick-fallback" id="quick-fb"><summary>手机或无法共享屏幕：粘贴二维码链接 / 上传截图</summary><label class="fb" for="quick-url">二维码链接</label><div class="row"><input id="quick-url" type="text" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://s.team/q/…"><button id="quick-url-go" type="button">识别并批准</button></div><div class="row"><label for="qr-image" class="upload-label">上传二维码截图</label></div><input id="qr-image" type="file" accept="image/*"><p id="qr-upload-status" class="muted"></p></details>
+</section>
+<details class="advanced-wrap"><summary>高级：全部账户操作（库存 / 市场 / 交易 / 确认事项 / 登录管理）</summary>
 <div class="layout"><aside aria-label="账户选择"><h2>账户</h2><p class="muted">为每个请求选择账户。</p><div id="accounts" class="account-list"></div><label for="account">账户标识</label><input id="account" autocomplete="off" maxlength="64" placeholder="输入账户标识"><small>没有账户列表权限时，仍可手动输入。</small><div class="account-actions"><button id="account-info" type="button">查看账户</button><button id="create-account" type="button">创建账户</button></div></aside>
 <main id="workspace" class="workspace" tabindex="-1"><div class="workspace-head"><div><h2>账户工作台</h2><p class="muted">先查看状态，更改前请审核。</p></div><span class="badge">操作以服务器目录为准</span></div>
 <nav class="nav" aria-label="工作流程"><button type="button" data-group="login" aria-pressed="true">登录</button><button type="button" data-group="inventory" aria-pressed="false">库存</button><button type="button" data-group="market" aria-pressed="false">市场</button><button type="button" data-group="trade" aria-pressed="false">交易</button><button type="button" data-group="confirmations" aria-pressed="false">确认事项</button><button type="button" data-group="advanced" aria-pressed="false">高级</button></nav>
 <div class="workgrid"><section class="editor" aria-labelledby="workflow-title"><h3 id="workflow-title">登录</h3><p class="muted">字段和权限由此服务器提供。留空的选填字段不会提交。</p><div id="empty" class="empty">连接后即可查看支持的操作。</div><form id="operation-form" hidden><div class="operation-select"><label for="operation">操作</label><select id="operation"></select><p id="operation-description" class="operation-note"></p><span id="operation-policy" class="badge"></span></div><div id="fields" class="fields"></div><div class="form-actions"><button id="run" class="primary" type="submit">执行操作</button><button id="retry" type="button" disabled>手动重试</button></div><p class="retry-note">写入绝不自动重试。手动重试会复用最近一次不含敏感信息的请求及其幂等键。</p></form>
 <section id="challenge" class="challenge" aria-labelledby="challenge-title" hidden><h3 id="challenge-title">Steam 登录验证</h3><p id="challenge-status"></p><canvas id="challenge-qr" role="img" aria-label="Steam 登录验证二维码；也可使用下方的验证链接" hidden></canvas><a id="challenge-link" target="_blank" rel="noopener noreferrer" hidden>打开 Steam 登录验证</a><label for="poll-interval">轮询间隔（秒）</label><input id="poll-interval" type="number" min="3" max="30" step="1" value="5"><small>最多检查登录状态 20 次。会话写入需要明确的批量授权；每次使用新的幂等键。</small><div class="row"><button id="poll-login" type="button" disabled>授权登录轮询</button><button id="stop-poll" type="button" disabled>停止轮询</button></div></section>
-<section id="qr-upload" class="challenge" aria-labelledby="qr-upload-title"><h3 id="qr-upload-title">二维码识别</h3><p class="muted">直接截取屏幕（或上传截图），自动识别官方客户端登录二维码中的链接并填入“官方客户端二维码链接”字段。识别在本机浏览器内完成，画面不会上传到任何服务器。</p><div class="row"><button id="qr-screen" type="button">截取屏幕识别</button><label for="qr-image" class="upload-label">上传截图识别</label></div><input id="qr-image" type="file" accept="image/*"><video id="qr-video" playsinline muted hidden></video><p id="qr-upload-status" class="muted" role="status"></p></section></section>
+</section>
 <section class="result-panel" aria-labelledby="result-title"><div class="result-head"><h3 id="result-title">响应查看器</h3><button id="clear-result" type="button">清空</button></div><pre id="output" tabindex="0">尚未发送请求。请先连接并选择账户。</pre></section></div><p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p></main></div>
+</details>
 <footer>向 Steam 致敬，并非 Steam 官方产品。不使用第三方资源或验证服务。在共享设备上使用完毕后，请断开连接。</footer>
 <dialog id="write-dialog" aria-labelledby="review-title" aria-describedby="review-warning"><h2 id="review-title">审核此次写入</h2><p id="review-warning"></p><dl><dt>操作</dt><dd id="review-operation"></dd><dt>账户</dt><dd id="review-account"></dd><dt>金额</dt><dd id="review-amount"></dd><dt>物品</dt><dd id="review-item"></dd><dt>接收方</dt><dd id="review-recipient"></dd></dl><details><summary>全部参数（机密已隐藏）</summary><pre id="review-arguments"></pre></details><div class="ack"><input id="acknowledge" type="checkbox"><label for="acknowledge">我已核对账户、金额、物品和接收方，并授权此次写入。</label></div><div class="dialog-actions"><button id="cancel-write" type="button" autofocus>取消</button><button id="confirm-write" class="primary" type="button" disabled>授权写入</button></div></dialog>
 <script>
@@ -11093,8 +11147,8 @@ $('operation').addEventListener('change',()=>{cancelPoll();renderFields();});
 for (const button of document.querySelectorAll('[data-group]')) button.addEventListener('click',()=>{activeGroup=button.dataset.group;for(const item of document.querySelectorAll('[data-group]')) item.setAttribute('aria-pressed',String(item===button));$('workflow-title').textContent=button.textContent;renderOperations();});
 $('account').addEventListener('change',()=>{resetChallenge();retryWrite=null;setBusy(busy);$('output').textContent='账户已切换。请执行操作以查看此账户。';renderFields();});
 function renderAccounts(accounts) { $('accounts').replaceChildren(); for(const slug of accounts) {if(typeof slug !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) continue;const button=document.createElement('button');button.type='button';button.textContent=slug;button.setAttribute('aria-pressed',String(slug===$('account').value));button.addEventListener('click',()=>{if(busy)return;$('account').value=slug;$('account').dispatchEvent(new Event('change'));for(const item of $('accounts').children)item.setAttribute('aria-pressed',String(item===button));});$('accounts').append(button);} if(!$('accounts').children.length){const note=document.createElement('p');note.className='muted';note.textContent='未返回任何账户。请在下方输入账户标识。';$('accounts').append(note);} }
-$('connection-form').addEventListener('submit',async event=>{event.preventDefault();if(busy)return;resetChallenge();generation++;token=$('token').value.trim();$('token').value='';retryWrite=null;registry=[];renderOperations();if(!token){status('请输入 API 访问令牌。','error');return;}setBusy(true);status('正在加载支持的操作…');const current=generation;try{const data=await request({method:'GET',path:'/v1/operations'});if(current!==generation)return;registry=Array.isArray(data.operations)?data.operations.filter(x=>x&&typeof x.name==='string'&&/^[a-zA-Z0-9_.-]{1,150}$/.test(x.name)&&typeof x.mutating==='boolean'&&x.schema&&x.schema.properties&&Array.isArray(x.schema.required)):[];renderOperations();$('connection-state').textContent='已连接 · 令牌仅保存在内存中';status('操作目录已加载。请选择账户和操作。','success');try{const list=await request({method:'GET',path:'/v1/accounts'});if(current===generation)renderAccounts(Array.isArray(list.accounts)?list.accounts:[]);}catch{if(current===generation)status('操作目录已加载。查看账户列表需要管理员权限；请手动输入账户标识。');}}catch(error){if(current===generation){token='';$('connection-state').textContent='未连接';status(errorMessage(error),'error');}}finally{if(current===generation)setBusy(false);}});
-$('disconnect').addEventListener('click',()=>{generation++;resetChallenge();discardPending();if($('write-dialog').open)$('write-dialog').close();token='';registry=[];retryWrite=null;$('token').value='';$('output').textContent='已断开连接，响应已清空。';$('accounts').replaceChildren();$('connection-state').textContent='未连接';renderOperations();setBusy(false);status('令牌和登录验证已从页面内存中清除。');});
+$('connection-form').addEventListener('submit',async event=>{event.preventDefault();if(busy)return;resetChallenge();generation++;token=$('token').value.trim();$('token').value='';retryWrite=null;registry=[];renderOperations();if(!token){status('请输入 API 访问令牌。','error');return;}setBusy(true);status('正在加载支持的操作…');const current=generation;try{const data=await request({method:'GET',path:'/v1/operations'});if(current!==generation)return;registry=Array.isArray(data.operations)?data.operations.filter(x=>x&&typeof x.name==='string'&&/^[a-zA-Z0-9_.-]{1,150}$/.test(x.name)&&typeof x.mutating==='boolean'&&x.schema&&x.schema.properties&&Array.isArray(x.schema.required)):[];renderOperations();$('connection-state').textContent='已连接 · 令牌仅保存在内存中';if(window.quickSetReady)window.quickSetReady(true);status('操作目录已加载。请选择账户和操作。','success');try{const list=await request({method:'GET',path:'/v1/accounts'});if(current===generation)renderAccounts(Array.isArray(list.accounts)?list.accounts:[]);}catch{if(current===generation)status('操作目录已加载。查看账户列表需要管理员权限；请手动输入账户标识。');}}catch(error){if(current===generation){token='';$('connection-state').textContent='未连接';status(errorMessage(error),'error');}}finally{if(current===generation)setBusy(false);}});
+$('disconnect').addEventListener('click',()=>{generation++;resetChallenge();discardPending();if($('write-dialog').open)$('write-dialog').close();token='';registry=[];retryWrite=null;$('token').value='';$('output').textContent='已断开连接，响应已清空。';$('accounts').replaceChildren();$('connection-state').textContent='未连接';if(window.quickSetReady)window.quickSetReady(false);renderOperations();setBusy(false);status('令牌和登录验证已从页面内存中清除。');});
 $('clear-result').addEventListener('click',()=>{$('output').textContent='响应已清空。';});
 $('create-account').addEventListener('click',()=>{if(busy)return;try{reviewWrite({name:'account.create',account:$('account').value.trim(),method:'PUT',path:accountPath(),body:{},mutating:true,key:crypto.randomUUID()});}catch(error){status(errorMessage(error),'error');}});
 $('account-info').addEventListener('click',()=>{if(busy)return;cancelPoll();try{void dispatch({name:'account.info',method:'GET',path:accountPath(),mutating:false});}catch(error){status(errorMessage(error),'error');}});
@@ -11118,6 +11172,7 @@ $('stop-poll').addEventListener('click',()=>{cancelPoll();status('登录轮询�
     return r&&r.data?[r.data]:[];
   };
   const accept=url=>{
+    if(window.quickHandleURL){note.textContent='已识别，正在核对并批准…';window.quickHandleURL(url);return;}
     const op=registry.find(x=>x.name==='session.qr_inspect');
     if(!op){note.textContent='已识别链接：'+url+'（当前目录没有“查看官方客户端扫码请求”操作，请手动使用。）';return;}
     const group=document.querySelector('[data-group=login]');if(group)group.click();
@@ -11172,6 +11227,99 @@ $('stop-poll').addEventListener('click',()=>{cancelPoll();status('登录轮询�
       stream.getVideoTracks()[0].addEventListener('ended',finish);
     });
   } else if(screenButton){screenButton.disabled=true;screenButton.title='此浏览器不支持屏幕捕获 API';}
+})();
+// Quick approve engine: keep screen capture alive, detect each new s.team QR,
+// inspect + approve within seconds, follow QR rotation, stop only on success.
+(()=>{
+  const QR_RE=/^https:\/\/s\.team\/q\/\d+\/\d+$/;
+  const startBtn=$('quick-start'),autoBox=$('quick-auto'),stage=$('quick-stage'),video=$('quick-video');
+  const dot=$('quick-dot'),stateEl=$('quick-state'),msg=$('quick-msg'),deviceEl=$('quick-device');
+  const confirmBox=$('quick-confirm'),confirmText=$('quick-confirm-text');
+  let detector=null;try{detector=new BarcodeDetector({formats:['qr_code']});}catch{}
+  let stream=null,scanning=false,working=false,lastURL='',pendingHandle=null,done=false;const dead=new Set();
+  const canvas=document.createElement('canvas');
+  const say=(t,tone='')=>{msg.textContent=t;msg.dataset.tone=tone;};
+  const live=(t,cls)=>{stateEl.textContent=t;dot.className='dot'+(cls?' '+cls:'');};
+  const acct=()=>{const v=$('account').value.trim()||'main';return /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(v)?v:'main';};
+  const key=()=>crypto.randomUUID();
+  const op=(name,args)=>request({method:'POST',path:'/v1/accounts/'+encodeURIComponent(acct())+'/operations/'+name,body:{arguments:args},mutating:true,key:key()});
+  const LABELS={device_friendly_name:'设备',platform_type:'平台',ip:'IP',city:'城市',state:'地区',country:'国家',geoloc:'位置'};
+  const showDevice=r=>{
+    const dl=document.createElement('dl');
+    for(const k of Object.keys(LABELS)){const v=r[k];if(v===undefined||v===null||v==='')continue;const dt=document.createElement('dt');dt.textContent=LABELS[k];const dd=document.createElement('dd');dd.textContent=String(v);dl.append(dt,dd);}
+    deviceEl.replaceChildren();
+    if(r.requestor_location_mismatch){const w=document.createElement('p');w.className='warn';w.textContent='注意：发起登录的位置与本服务位置不一致，请确认是你自己的电脑。';deviceEl.append(w);}
+    deviceEl.append(dl);deviceEl.hidden=false;
+  };
+  const expired=e=>e&&(e.code==='upstream_eresult_27'||e.code==='upstream_eresult_9'||e.code==='qr_review_expired'||e.code==='upstream_eresult_29');
+  const finishSuccess=()=>{done=true;stopCapture();live('已批准','ok');confirmBox.hidden=true;say('已批准。桌面 Steam 客户端应在几秒内自动完成登录。','success');startBtn.textContent='再次批准登录';};
+  const approve=async handle=>{
+    live('正在批准…','scan');
+    try{await op('session.qr_approve',{review_handle:handle});finishSuccess();}
+    catch(e){
+      if(expired(e)){dead.add(lastURL);lastURL='';live('二维码已过期，等待客户端显示新码…','scan');say('上一张二维码已过期，正在等待客户端显示新码并自动重试。');}
+      else{live('批准失败','err');say(errorMessage(e),'error');}
+    }
+  };
+  const handleURL=async url=>{
+    if(done||working||url===lastURL||dead.has(url))return;
+    if(!token){say('请先在上方粘贴管理员令牌并点「连接」。','error');return;}
+    working=true;lastURL=url;confirmBox.hidden=true;pendingHandle=null;
+    live('识别到二维码，正在核对…','scan');
+    try{
+      const data=await op('session.qr_inspect',{qr_url:url});
+      const r=(data&&data.result)||{};
+      showDevice(r);
+      if(!r.review_handle)throw Object.assign(Error('服务端未返回审核句柄。'),{code:'no_handle'});
+      if(autoBox.checked){await approve(r.review_handle);}
+      else{pendingHandle=r.review_handle;confirmText.textContent='核对上方设备信息，是你正在登录的电脑吗？二维码很快会刷新，请尽快决定。';confirmBox.hidden=false;live('等待你确认','scan');}
+    }catch(e){
+      if(expired(e)){dead.add(url);lastURL='';live('二维码已过期，等待客户端显示新码…','scan');say('这张二维码已过期。保持 Steam 登录界面打开，新码出现后会自动识别。');}
+      else{live('核对失败','err');say(errorMessage(e),'error');}
+    }finally{working=false;}
+  };
+  window.quickHandleURL=url=>{done=false;stage.hidden=stream?false:true;void handleURL(url);};
+  const decode=async src=>{
+    if(detector){try{const codes=await detector.detect(src);const c=codes.find(x=>x.rawValue&&QR_RE.test(x.rawValue));if(c)return c.rawValue;}catch{}}
+    if(self.jsQR){const ctx=canvas.getContext('2d',{willReadFrequently:true});const id=ctx.getImageData(0,0,canvas.width,canvas.height);const r=self.jsQR(id.data,id.width,id.height,{inversionAttempts:'attemptBoth'});if(r&&r.data&&QR_RE.test(r.data))return r.data;}
+    return '';
+  };
+  const tick=async()=>{
+    if(!scanning)return;
+    if(video.videoWidth&&!working){
+      const w=Math.min(1280,video.videoWidth),s=w/video.videoWidth;canvas.width=w;canvas.height=Math.max(1,Math.round(video.videoHeight*s));
+      canvas.getContext('2d',{willReadFrequently:true}).drawImage(video,0,0,canvas.width,canvas.height);
+      const url=await decode(canvas);if(url)await handleURL(url);
+    }
+    if(scanning)setTimeout(tick,250);
+  };
+  function stopCapture(){scanning=false;if(stream){try{stream.getTracks().forEach(t=>t.stop());}catch{}}stream=null;video.srcObject=null;stage.hidden=true;startBtn.dataset.on='0';if(!done)startBtn.textContent='开始批准登录';}
+  startBtn.addEventListener('click',async()=>{
+    if(startBtn.dataset.on==='1'){stopCapture();live('已停止');say('已停止。');return;}
+    if(!token){say('请先在上方粘贴管理员令牌并点「连接」。','error');return;}
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){say('此浏览器不支持共享屏幕。请展开下方「手动粘贴链接或上传截图」。','error');return;}
+    if(!detector&&!self.jsQR){say('此浏览器无法识别二维码，请用手动粘贴。','error');return;}
+    try{stream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:10},audio:false});}
+    catch(e){say(e&&e.name==='NotAllowedError'?'已取消共享。':'无法共享屏幕：'+(e&&e.message||e),'error');return;}
+    done=false;lastURL='';deviceEl.hidden=true;confirmBox.hidden=true;say('');
+    video.srcObject=stream;stage.hidden=false;try{await video.play();}catch{}
+    stream.getVideoTracks()[0].addEventListener('ended',()=>{if(!done){stopCapture();live('共享已结束');}});
+    scanning=true;startBtn.dataset.on='1';startBtn.textContent='停止';live('正在寻找 Steam 登录二维码…','scan');
+    void tick();
+  });
+  $('quick-approve').addEventListener('click',()=>{if(pendingHandle){const h=pendingHandle;pendingHandle=null;confirmBox.hidden=true;void approve(h);}});
+  $('quick-deny').addEventListener('click',async()=>{const h=pendingHandle;pendingHandle=null;confirmBox.hidden=true;if(!h)return;try{await op('session.qr_deny',{review_handle:h});say('已拒绝该登录请求。');live('已拒绝');stopCapture();}catch(e){say(errorMessage(e),'error');}});
+  $('quick-url-go').addEventListener('click',()=>{const raw=$('quick-url').value.replace(/^[\s\u00a0\u200b-\u200d\u2060\ufeff"'<>“”]+|[\s\u00a0\u200b-\u200d\u2060\ufeff"'<>“”]+$/g,'');if(!QR_RE.test(raw)){say('链接格式应为 https://s.team/q/数字/数字。','error');return;}lastURL='';dead.delete(raw);window.quickHandleURL(raw);});
+  const mobile=!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia||matchMedia('(max-width:700px)').matches;
+  const nocap=!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia;
+  if(nocap)document.getElementById('quick').classList.add('nocap');
+  if(mobile){$('quick-fb').open=true;}
+  window.quickSetReady=ok=>{startBtn.disabled=!ok;$('quick-acct').textContent=ok?'账户：'+acct():'请先连接';
+    const conn=document.querySelector('.connection');if(conn)conn.classList.toggle('on',ok);
+    $('connect').classList.toggle('primary',!ok);
+    let rl=document.getElementById('relink');
+    if(ok&&!rl){rl=document.createElement('button');rl.id='relink';rl.type='button';rl.className='relink';rl.textContent='断开';rl.addEventListener('click',()=>$('disconnect').click());$('connection-state').append(rl);}
+    if(!ok&&rl)rl.remove();};
 })();
 window.addEventListener('pagehide',()=>{generation++;cancelPoll();token='';loginHandle='';discardPending();retryWrite=null;});
 renderOperations();setBusy(false);
