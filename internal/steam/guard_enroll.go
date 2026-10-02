@@ -131,3 +131,32 @@ func mustUint64(s string) uint64 {
 	n, _ := strconv.ParseUint(s, 10, 64)
 	return n
 }
+
+// guardRecoveryCode returns the stored revocation code so the owner can back
+// it up. This is the ONLY way to regain the account if the enrolled
+// authenticator (and this server's state) is lost, for accounts without a
+// bound phone number. Admin scope; write-audited like other sensitive reads.
+func guardRecoveryCode(_ context.Context, c *Context, _ map[string]any) (any, error) {
+	g := object(c.State["guard"])
+	code := textValue(g["revocation_code"])
+	if code == "" {
+		return nil, fail(409, "guard_not_configured")
+	}
+	return map[string]any{"revocation_code": code, "advice": "backup_offline"}, nil
+}
+
+// guardCurrentCode returns the current 5-char TOTP derived locally from the
+// stored shared_secret (valid ~30s). Never contacts Steam.
+func guardCurrentCode(_ context.Context, c *Context, _ map[string]any) (any, error) {
+	g := object(c.State["guard"])
+	secret := textValue(g["shared_secret"])
+	if secret == "" {
+		return nil, fail(409, "guard_not_configured")
+	}
+	code, e := GenerateAuthCode(secret, int64(timestamp()))
+	if e != nil {
+		return nil, e
+	}
+	remaining := 30 - int64(timestamp())%30
+	return map[string]any{"code": code, "expires_in": float64(remaining)}, nil
+}

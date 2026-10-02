@@ -242,47 +242,5 @@ func QRApprovalOperations() []Operation {
 		return qrSubmit(ctx, c, args, true)
 	}), spec("session.qr_deny", true, handle, func(ctx context.Context, c *Context, args map[string]any) (any, error) {
 		return qrSubmit(ctx, c, args, false)
-	}), spec("session.qr_code_approve", true, handle, qrCodeApprove)}
-}
-
-// qrCodeApprove approves a previously inspected QR login using the
-// UpdateAuthSessionWithSteamGuardCode path (device TOTP) instead of the
-// mobile-confirmation HMAC. Works for accounts whose authenticator exists
-// (even pre-finalize) as long as Steam accepts its TOTP: the code is derived
-// locally from the stored shared_secret and never returned to the caller.
-func qrCodeApprove(ctx context.Context, c *Context, args map[string]any) (any, error) {
-	s, e := qrMobile(c)
-	if e != nil {
-		return nil, e
-	}
-	r := object(c.State["qr_review"])
-	if textValue(r["review_handle"]) == "" || r["review_handle"] != args["review_handle"] {
-		return nil, fail(409, "qr_review_handle_mismatch")
-	}
-	inspected, ok1 := r["inspected_at"].(float64)
-	expires, ok2 := r["expires_at"].(float64)
-	if !ok1 || !ok2 || inspected > timestamp() || expires <= timestamp() || expires > inspected+120 {
-		delete(c.State, "qr_review")
-		return nil, fail(409, "qr_review_expired")
-	}
-	if r["steam_id"] != s.steam || r["credential_binding"] != qrBinding(s) {
-		delete(c.State, "qr_review")
-		return nil, fail(409, "qr_review_session_changed")
-	}
-	delete(c.State, "qr_review")
-	version, ok := r["version"].(float64)
-	if !ok || math.Trunc(version) != version || textValue(r["client_id"]) == "" {
-		return nil, invalidResponse()
-	}
-	client := textValue(r["client_id"])
-	code, e := GenerateAuthCode(s.secret, int64(timestamp()))
-	if e != nil {
-		return nil, e
-	}
-	_, e = CallService(ctx, c.Transport, "IAuthenticationService", "UpdateAuthSessionWithSteamGuardCode",
-		new(ProtoWriter).Uint(1, decimal(client)).Fixed64(2, decimal(s.steam)).String(3, code).Uint(4, 3).Finish(), "", "")
-	if e != nil {
-		return nil, e
-	}
-	return map[string]any{"status": "approved"}, nil
+	}), }
 }

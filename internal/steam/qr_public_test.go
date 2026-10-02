@@ -12,7 +12,7 @@ func mobileContext() *Context {
 }
 func TestQRConsumeBeforeFailure(t *testing.T) {
 	ops := QRApprovalOperations()
-	if len(ops) != 4 {
+	if len(ops) != 3 {
 		t.Fatal(len(ops))
 	}
 	c := mobileContext()
