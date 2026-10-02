@@ -1,0 +1,696 @@
+[
+  {
+    "operation": "confirmations.accept",
+    "rendered": [
+      {
+        "name": "confirmation_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "confirmations.accept_all",
+    "rendered": []
+  },
+  {
+    "operation": "confirmations.deny",
+    "rendered": [
+      {
+        "name": "confirmation_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "confirmations.deny_all",
+    "rendered": []
+  },
+  {
+    "operation": "confirmations.get_all",
+    "rendered": []
+  },
+  {
+    "operation": "confirmations.send_multiple",
+    "rendered": [
+      {
+        "name": "accept",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "confirmation_ids",
+        "type": "textarea",
+        "tag": "TEXTAREA",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "guard.configure",
+    "rendered": [
+      {
+        "name": "clear",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "device_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "identity_secret",
+        "type": "password",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "revocation_code",
+        "type": "password",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "shared_secret",
+        "type": "password",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "inventory.get",
+    "rendered": [
+      {
+        "name": "app",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "context_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "language",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "start_asset_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.buy_listing",
+    "rendered": [
+      {
+        "name": "app",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "confirmation_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "listing_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "market_hash_name",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "currency",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "fee",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "subtotal",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.cancel_buy_order",
+    "rendered": [
+      {
+        "name": "buy_order_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.cancel_sell_listing",
+    "rendered": [
+      {
+        "name": "listing_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.get_buy_order_status",
+    "rendered": [
+      {
+        "name": "buy_order_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.get_user_listings",
+    "rendered": [
+      {
+        "name": "count",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "start",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.place_buy_order",
+    "rendered": [
+      {
+        "name": "app",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "confirmation_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "market_hash_name",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "currency",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "price",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "quantity",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "market.place_sell_listing",
+    "rendered": [
+      {
+        "name": "app",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "asset_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "context_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "currency",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "to_receive",
+        "type": "number",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "public.market.get_price_overview",
+    "rendered": [
+      {
+        "name": "app",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "obj",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "currency",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "if_modified_since",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": false
+      }
+    ]
+  },
+  {
+    "operation": "public.server_time",
+    "rendered": [
+      {
+        "name": "sender_time",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.cancel",
+    "rendered": [
+      {
+        "name": "login_handle",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.code",
+    "rendered": [
+      {
+        "name": "auth_code",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "code_type",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": false
+      },
+      {
+        "name": "login_handle",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.cookies",
+    "rendered": []
+  },
+  {
+    "operation": "session.credentials",
+    "rendered": [
+      {
+        "name": "account_name",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "password",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "device_friendly_name",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "persistence",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "platform",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": false
+      }
+    ]
+  },
+  {
+    "operation": "session.poll",
+    "rendered": [
+      {
+        "name": "login_handle",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.qr",
+    "rendered": [
+      {
+        "name": "device_friendly_name",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "platform",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": false
+      }
+    ]
+  },
+  {
+    "operation": "session.qr_approve",
+    "rendered": [
+      {
+        "name": "review_handle",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.qr_deny",
+    "rendered": [
+      {
+        "name": "review_handle",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.qr_inspect",
+    "rendered": [
+      {
+        "name": "qr_url",
+        "type": "password",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.refresh",
+    "rendered": [
+      {
+        "name": "renew_refresh_token",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "session.status",
+    "rendered": []
+  },
+  {
+    "operation": "trade.accept",
+    "rendered": [
+      {
+        "name": "partner",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "trade_offer_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "trade.cancel",
+    "rendered": [
+      {
+        "name": "trade_offer_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "trade.decline",
+    "rendered": [
+      {
+        "name": "trade_offer_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "trade.get",
+    "rendered": [
+      {
+        "name": "trade_offer_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "trade.get_multiple",
+    "rendered": [
+      {
+        "name": "active_only",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "cursor",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "historical_cutoff",
+        "type": "number",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "historical_only",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "received",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "sent",
+        "type": "select-one",
+        "tag": "SELECT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "trade.send",
+    "rendered": [
+      {
+        "name": "countered_id",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "from_partner",
+        "type": "textarea",
+        "tag": "TEXTAREA",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "message",
+        "type": "text",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      },
+      {
+        "name": "partner",
+        "type": "text",
+        "tag": "INPUT",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "to_partner",
+        "type": "textarea",
+        "tag": "TEXTAREA",
+        "required": true,
+        "help": true
+      },
+      {
+        "name": "token",
+        "type": "password",
+        "tag": "INPUT",
+        "required": false,
+        "help": true
+      }
+    ]
+  },
+  {
+    "operation": "wallet.info",
+    "rendered": []
+  }
+]

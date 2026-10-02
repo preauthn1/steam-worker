@@ -1,0 +1,140 @@
+[
+  {
+    "width": 1440,
+    "overflow": false,
+    "buttonWidths": [
+      178,
+      178
+    ],
+    "supportSize": "14px",
+    "inputSize": "16px",
+    "nav": [
+      {
+        "label": "登录",
+        "height": 48,
+        "border": "3px"
+      },
+      {
+        "label": "库存",
+        "height": 48,
+        "border": "3px"
+      },
+      {
+        "label": "市场",
+        "height": 48,
+        "border": "3px"
+      },
+      {
+        "label": "交易",
+        "height": 48,
+        "border": "3px"
+      },
+      {
+        "label": "确认事项",
+        "height": 48,
+        "border": "3px"
+      },
+      {
+        "label": "高级",
+        "height": 48,
+        "border": "3px"
+      }
+    ],
+    "storage": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "overflow": false,
+    "buttonWidths": [
+      173,
+      173
+    ],
+    "supportSize": "14px",
+    "inputSize": "16px",
+    "nav": [
+      {
+        "label": "登录",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "库存",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "市场",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "交易",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "确认事项",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "高级",
+        "height": 45,
+        "border": "3px"
+      }
+    ],
+    "storage": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 320,
+    "overflow": false,
+    "buttonWidths": [
+      138,
+      138
+    ],
+    "supportSize": "14px",
+    "inputSize": "16px",
+    "nav": [
+      {
+        "label": "登录",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "库存",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "市场",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "交易",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "确认事项",
+        "height": 45,
+        "border": "3px"
+      },
+      {
+        "label": "高级",
+        "height": 45,
+        "border": "3px"
+      }
+    ],
+    "storage": [
+      0,
+      0
+    ]
+  }
+]

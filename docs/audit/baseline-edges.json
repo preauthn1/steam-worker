@@ -1,0 +1,47 @@
+[
+  {
+    "case": "状态字符串被过滤",
+    "output": "{\n  \"operation\": \"session.status\",\n  \"result\": {},\n  \"note\": \"已省略认证机密和原始响应。\"\n}"
+  },
+  {
+    "case": "取消登录后二维码仍在",
+    "challenge_visible": true,
+    "poll_enabled": true,
+    "output": "{\n  \"operation\": \"session.cancel\",\n  \"result\": {},\n  \"note\": \"已省略认证机密和原始响应。\"\n}"
+  },
+  {
+    "case": "选填布尔缺少 false",
+    "fields": [
+      {
+        "name": "active_only",
+        "type": "checkbox"
+      },
+      {
+        "name": "historical_only",
+        "type": "checkbox"
+      },
+      {
+        "name": "received",
+        "type": "checkbox"
+      },
+      {
+        "name": "sent",
+        "type": "checkbox"
+      }
+    ]
+  },
+  {
+    "case": "验证码约束缺失",
+    "dialog_open": true
+  },
+  {
+    "case": "轮询期间控制未锁且重复启动入口开启",
+    "account_enabled": true,
+    "run_enabled": true,
+    "poll_enabled": true
+  },
+  {
+    "case": "切换账户失焦清空表单",
+    "item_value": ""
+  }
+]

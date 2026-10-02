@@ -1,0 +1,525 @@
+{
+  "steps": [
+    {
+      "step": "打开本机控制台",
+      "state": "未连接 · 令牌仅保存在页面内存中，不写入浏览器存储",
+      "status": "",
+      "dialog": false,
+      "account": "",
+      "run_disabled": true,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "连接与账户目录",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "操作目录已加载。请选择账户和操作。",
+      "dialog": false,
+      "account": "",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "GET",
+          "path": "/v1/operations",
+          "status": 200,
+          "fixture": false
+        },
+        {
+          "method": "GET",
+          "path": "/v1/accounts",
+          "status": 200,
+          "fixture": false
+        }
+      ]
+    },
+    {
+      "step": "查看已有账户",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "smoke",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "GET",
+          "path": "/v1/accounts/smoke",
+          "status": 200,
+          "fixture": false
+        }
+      ]
+    },
+    {
+      "step": "查看未创建的 mytest",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "请求失败（HTTP 404）。请检查账户权限、参数和服务器状态。",
+      "dialog": false,
+      "account": "mytest",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "GET",
+          "path": "/v1/accounts/mytest",
+          "status": 404,
+          "fixture": false,
+          "code": "account_not_found"
+        }
+      ]
+    },
+    {
+      "step": "格式错误：下划线开头",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "请输入有效的账户标识（字母、数字、连字符或下划线）。",
+      "dialog": false,
+      "account": "_invalid",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "账户空值",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "请输入有效的账户标识（字母、数字、连字符或下划线）。",
+      "dialog": false,
+      "account": "",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "创建：打开审核",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "请输入有效的账户标识（字母、数字、连字符或下划线）。",
+      "dialog": true,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "创建：取消",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "请输入有效的账户标识（字母、数字、连字符或下划线）。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "创建：重新审核并提交（真实本机 API）",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "创建账户 · account.create已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "PUT",
+          "path": "/v1/accounts/audit-synthetic-01",
+          "status": 200,
+          "fixture": false
+        }
+      ]
+    },
+    {
+      "step": "创建后账户列表",
+      "list": "smoke\nuxrepro01",
+      "api_list": [
+        "audit-synthetic-01",
+        "smoke",
+        "uxrepro01"
+      ]
+    },
+    {
+      "step": "查看合成账户",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "GET",
+          "path": "/v1/accounts/audit-synthetic-01",
+          "status": 200,
+          "fixture": false
+        }
+      ]
+    },
+    {
+      "step": "标签页：login",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "标签页：inventory",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "标签页：market",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "标签页：trade",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "标签页：confirmations",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "标签页：advanced",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看账户 · account.info已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "只读 session.status（真实本机 API）",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/audit-synthetic-01/operations/session.status",
+          "status": 200,
+          "fixture": false
+        }
+      ]
+    },
+    {
+      "step": "求购表单审核（未发送）",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": true,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "求购取消",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "求购再次审核",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": true,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "求购 Escape 取消",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "取消后清空账户再提交",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": false,
+      "account": "",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "交易 JSON 表单审核（未发送）",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "查看会话状态 · session.status已完成。",
+      "dialog": true,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "fixture 400 invalid_arguments 写入拒绝",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "尚未确认写入是否完成。请勿将其作为新操作再次提交。请先检查状态；如需复用完全相同的请求，仅使用“手动重试”。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": false,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/audit-synthetic-01/operations/market.place_buy_order",
+          "status": 400,
+          "fixture": true,
+          "code": "invalid_arguments"
+        }
+      ]
+    },
+    {
+      "step": "手动重试审核",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "尚未确认写入是否完成。请勿将其作为新操作再次提交。请先检查状态；如需复用完全相同的请求，仅使用“手动重试”。",
+      "dialog": true,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": false,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "手动重试取消",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "尚未确认写入是否完成。请勿将其作为新操作再次提交。请先检查状态；如需复用完全相同的请求，仅使用“手动重试”。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": false,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "手动重试提交 fixture",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "尚未确认写入是否完成。请勿将其作为新操作再次提交。请先检查状态；如需复用完全相同的请求，仅使用“手动重试”。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": false,
+      "poll_disabled": true,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/audit-synthetic-01/operations/market.place_buy_order",
+          "status": 400,
+          "fixture": true,
+          "code": "invalid_arguments"
+        }
+      ]
+    },
+    {
+      "step": "二维码生成 fixture",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "使用二维码登录 · session.qr已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": false,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/audit-synthetic-01/operations/session.qr",
+          "status": 200,
+          "fixture": true
+        }
+      ]
+    },
+    {
+      "step": "轮询审核",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "使用二维码登录 · session.qr已完成。",
+      "dialog": true,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": false,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "轮询取消",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "使用二维码登录 · session.qr已完成。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": false,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "轮询拒绝后恢复 fixture",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "请求失败（HTTP 400）。请检查账户权限、参数和服务器状态。 轮询已停止，未重试任何请求。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": false,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/audit-synthetic-01/operations/session.poll",
+          "status": 400,
+          "fixture": true,
+          "code": "login_not_found"
+        }
+      ]
+    },
+    {
+      "step": "轮询停止 fixture",
+      "state": "已连接 · 令牌仅保存在内存中",
+      "status": "登录轮询已停止。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": false,
+      "retry_disabled": true,
+      "poll_disabled": false,
+      "stop_disabled": true,
+      "http": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/audit-synthetic-01/operations/session.poll",
+          "status": 200,
+          "fixture": true
+        }
+      ]
+    },
+    {
+      "step": "移动端",
+      "overflow": false
+    },
+    {
+      "step": "断开",
+      "state": "未连接",
+      "status": "令牌和登录验证已从页面内存中清除。",
+      "dialog": false,
+      "account": "audit-synthetic-01",
+      "run_disabled": true,
+      "retry_disabled": true,
+      "poll_disabled": false,
+      "stop_disabled": true,
+      "http": []
+    },
+    {
+      "step": "域名前端只读访问",
+      "http_status": 200,
+      "csp": "default-src 'none'; script-src 'sha256-q3OZE1EonIibdFJkzOUoFAgfy90WSxFFthUHs+t2cNw='; style-src 'sha256-LDLoMSHlq6mId2KKA8zstNjol8My0McIPC/heWQ5r0M='; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+      "cloudflare_beacon_in_html": true,
+      "local_beacon_in_html": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495' violates the following Content Security Policy directive: \"script-src 'sha256-q3OZE1EonIibdFJkzOUoFAgfy90WSxFFthUHs+t2cNw='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+        }
+      ]
+    },
+    {
+      "step": "合成账户清理",
+      "delete": [
+        200,
+        {
+          "exists": false,
+          "version": 6
+        }
+      ],
+      "after": 404
+    }
+  ],
+  "pageerrors": []
+}
