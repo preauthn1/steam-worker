@@ -174,18 +174,20 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
 	w.Header().Set("Referrer-Policy", "no-referrer")
+	start := time.Now()
 	result, e := s.handle(w, r)
+	status, code := 200, ""
 	if e != nil {
 		var h *httpError
 		if !errors.As(e, &h) {
 			h = &httpError{500, "internal_error"}
 		}
+		status, code = h.Status, h.Code
 		reply(w, h.Status, map[string]any{"error": map[string]any{"code": h.Code}})
-		return
-	}
-	if result != nil {
+	} else if result != nil {
 		reply(w, 200, result)
 	}
+	logAccess(r.Method, r.URL.Path, status, code, time.Since(start))
 }
 func (s *Server) handle(w http.ResponseWriter, r *http.Request) (any, error) {
 	path := r.URL.Path
