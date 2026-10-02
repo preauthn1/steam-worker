@@ -665,5 +665,5 @@ func SessionOperations() []Operation {
 		}
 		delete(c.State, "pending_login")
 		return map[string]any{"status": "cancelled"}, nil
-	}), spec("session.status", map[string]any{}, nil, sessionStatus), spec("guard.configure", map[string]any{"shared_secret": strSchema(128), "identity_secret": strSchema(128), "device_id": map[string]any{"type": "string", "maxLength": 128, "pattern": "^android:[0-9a-f-]{36}$"}, "revocation_code": strSchema(128), "clear": map[string]any{"type": "boolean"}}, nil, configureGuard)}
+	}), spec("session.status", map[string]any{}, nil, sessionStatus), spec("guard.configure", map[string]any{"shared_secret": strSchema(128), "identity_secret": strSchema(128), "device_id": map[string]any{"type": "string", "maxLength": 128, "pattern": "^android:[0-9a-f-]{36}$"}, "revocation_code": strSchema(128), "clear": map[string]any{"type": "boolean"}}, nil, configureGuard), spec("guard.enroll", map[string]any{}, nil, guardEnrollPhase1), spec("guard.finalize", map[string]any{"activation_code": map[string]any{"type": "string", "minLength": 5, "maxLength": 16, "pattern": "^[A-Za-z0-9]+$"}}, nil, guardEnrollFinalize)}
 }

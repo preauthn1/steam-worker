@@ -366,8 +366,14 @@ func (s *store) execute(account, op string, args map[string]any, principal, key 
 				i.ErrorStatus = h.Status
 				i.ErrorCode = h.Code
 			} else {
+				// Outcome stays unknown (never auto-retried), but a definitive
+				// upstream judgment (4xx other than 429: e.g. Steam eresult 5
+				// InvalidPassword) is surfaced truthfully to the caller instead
+				// of being folded into outcome_unknown.
 				i.Status = "unknown"
-				e = apiError(409, "outcome_unknown")
+				if !definitiveRejection(e) {
+					e = apiError(409, "outcome_unknown")
+				}
 			}
 		}
 		if se := s.save(account, r, slot, i); se != nil {
@@ -397,6 +403,16 @@ func (s *store) execute(account, op string, args map[string]any, principal, key 
 }
 
 var secretWords = []string{"password", "secret", "token", "cookie", "authorization", "signature", "revocation", "recovery", "auth_code", "apikey", "api_key", "request_id", "client_id", "mafile", "wallet_code"}
+
+// definitiveRejection reports whether err is a definitive upstream verdict that
+// the requested action was refused (HTTP 4xx other than 429), rather than an
+// uncertain transport outcome. Replaying a refused request cannot double-apply
+// an effect, so surfacing the verdict does not weaken the no-retry guarantee:
+// the intent remains status=unknown and is never re-executed.
+func definitiveRejection(err error) bool {
+	var h *httpError
+	return errors.As(err, &h) && h.Status >= 400 && h.Status < 500 && h.Status != 429
+}
 
 func redact(value any) any {
 	raw, e := json.Marshal(value)

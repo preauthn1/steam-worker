@@ -15,8 +15,8 @@ func TestSchemaCanonicalIDsAndNestedBounds(t *testing.T) {
 }
 func TestRegistryPreservesOperationCountAndPolicy(t *testing.T) {
 	r := Registry()
-	if len(r) != 35 {
-		t.Fatalf("operations %d want35", len(r))
+	if len(r) != 38 {
+		t.Fatalf("operations %d want38", len(r))
 	}
 	for name, o := range r {
 		if name != o.Name || o.Run == nil {

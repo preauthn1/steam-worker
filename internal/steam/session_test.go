@@ -25,7 +25,7 @@ func syntheticJWT(sub string, aud []string) string {
 }
 func TestSessionLifecycle(t *testing.T) {
 	ops := SessionOperations()
-	if len(ops) != 9 {
+	if len(ops) != 11 {
 		t.Fatal(len(ops))
 	}
 	c := &Context{State: State{}, Scope: "admin"}

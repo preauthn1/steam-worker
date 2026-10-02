@@ -1,17 +1,20 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><title>Steam Worker · 账户控制台</title><style>
-:root{color-scheme:dark;--bg:#171d25;--shell:#101822;--panel:#202e3d;--inset:#121d29;--line:#3c5269;--text:#edf3f9;--muted:#b7c8d9;--blue:#66c0f4;--action:#126391;--danger:#ffb7a9;--ok:#66c0f4;--hover:#2b4055;--selected:#254b69;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}::selection{background:var(--blue);color:var(--shell)}:focus-visible{outline:3px solid var(--blue);outline-offset:3px}a{color:var(--blue);text-underline-offset:4px}button,input,select,textarea{font:inherit}button{min-height:44px;border:1px solid var(--line);border-radius:3px;background:transparent;color:var(--text);padding:10px 16px;cursor:pointer}button:hover:not(:disabled){background:var(--hover)}button.primary{background:var(--action);border-color:#409bcd}button.primary:hover:not(:disabled){background:#176c9d}button:disabled{opacity:.5;cursor:not-allowed}input,select,textarea{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:2px;background:var(--inset);color:var(--text);caret-color:var(--blue)}input::placeholder,textarea::placeholder{color:var(--muted)}input[type=checkbox]{width:20px;min-height:20px;accent-color:var(--blue);flex-shrink:0}label{display:block;font-weight:600;margin-bottom:6px}small,.muted{color:var(--muted)}small{font-size:14px;display:block;line-height:1.6;margin-top:5px}h1,h2,h3,p{margin:0}h1{font-size:20px;letter-spacing:.02em}h2{font-size:28px;font-weight:600}h3{font-size:18px;font-weight:600}p{line-height:1.65;max-width:72ch}.skip{position:absolute;top:-100px;left:16px;z-index:4;background:var(--shell);padding:12px}.skip:focus{top:8px}.masthead{background:var(--shell);border-bottom:1px solid var(--line);padding:22px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px}.wordmark{display:flex;align-items:center;gap:12px}.mark{width:32px;height:32px;color:var(--blue)}.badge{font-size:14px;border:1px solid var(--line);padding:5px 9px;color:var(--muted);white-space:nowrap}.connection{padding:22px 32px;background:#1b2938;border-bottom:1px solid var(--line)}.connection form{display:grid;grid-template-columns:minmax(220px,520px) minmax(120px,1fr) minmax(120px,1fr);gap:12px;align-items:end;max-width:900px}.connection p{margin-top:12px;font-size:14px}.layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 200px)}aside{padding:28px 20px;background:var(--shell);border-right:1px solid var(--line)}aside h2{font-size:18px;margin-bottom:20px}.account-list{display:grid;gap:7px;margin:16px 0 24px}.account-list button{text-align:left;overflow-wrap:anywhere}.account-list button[aria-pressed=true]{background:#254b69;border-color:var(--blue)}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.account-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.account-actions button{padding:8px}.workspace{min-width:0;padding:28px 32px 40px}.workspace-head{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:24px}.workspace-head p{margin-top:6px}.nav{display:flex;gap:8px;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:26px;padding-bottom:12px;scrollbar-width:thin}.nav button{background:var(--shell);border-color:var(--line);white-space:nowrap;color:var(--muted);min-width:88px;border-bottom-width:3px}.nav button[aria-pressed=true]{background:var(--selected);color:var(--text);border-color:var(--blue);font-weight:700}.workgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px}.editor{min-width:0}.editor>p{margin:10px 0 20px}.operation-select{margin-bottom:22px}.operation-note{margin:12px 0 20px;color:var(--muted)}.fields{display:grid;gap:24px}.field-group{min-width:0;margin:0;padding:18px 0 0;border:0;border-top:1px solid var(--line)}.field-group legend{padding:0 12px 0 0;color:var(--blue);font-weight:600;font-size:16px}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px}.field-wide{grid-column:1/-1}.field label{overflow-wrap:anywhere;font-size:15px}.field-code{display:block;font:14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);margin-top:3px}.field small{overflow-wrap:anywhere}.form-empty{color:var(--muted);padding:16px 0;border-top:1px solid var(--line)}.field{min-width:0}.field-check{display:flex;align-items:center;gap:10px}.field-check label{margin:0}.form-actions{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}.result-panel{background:var(--inset);border:1px solid var(--line);min-width:0;align-self:start}.result-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.result-head h3{font-size:16px}pre{font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:20px;max-height:560px;overflow:auto;font-variant-numeric:tabular-nums;scrollbar-color:#49647c var(--inset)}.status{margin-bottom:18px;padding:12px 16px;background:var(--shell);border:1px solid var(--line);color:var(--muted);min-height:52px;overflow-wrap:anywhere}.status:empty{display:none}.account-error{color:var(--danger)}input[aria-invalid=true]{border-color:var(--danger)}.form-actions button{min-width:128px}.workspace-head .badge{max-width:100%;white-space:normal;overflow-wrap:anywhere}.status[data-tone=error]{color:var(--danger)}.status[data-tone=success]{color:var(--ok)}.challenge{margin-top:20px;padding:18px;background:var(--panel);border:1px solid var(--line)}.challenge p{margin:8px 0 12px}.challenge canvas{display:block;max-width:100%;height:auto;background:#fff;margin:16px 0;image-rendering:pixelated}.challenge input{max-width:130px}.challenge a{display:block;overflow-wrap:anywhere;margin:12px 0}.challenge .row{margin-top:12px}[hidden]{display:none!important}.empty{border:1px dashed var(--line);padding:24px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:18px 32px;font-size:14px;color:var(--muted)}dialog{max-width:640px;width:calc(100% - 32px);max-height:90dvh;overflow:auto;border:1px solid #6988a4;border-radius:4px;background:var(--panel);color:var(--text);padding:28px}dialog::backdrop{background:#070e18cc}dialog h2{font-size:24px}dialog p{margin:12px 0}dl{display:grid;grid-template-columns:105px minmax(0,1fr);gap:12px;margin:22px 0}dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.ack{display:flex;align-items:start;gap:12px;padding:16px 0;border-top:1px solid var(--line)}.ack label{font-size:14px;line-height:1.65}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.retry-note{font-size:14px;color:var(--muted);margin-top:14px!important}@media(min-width:1600px){.workspace{padding:36px 48px}.workgrid{gap:40px}}@media(max-width:1050px){.layout{grid-template-columns:210px minmax(0,1fr)}.workspace{padding:24px}.workgrid{grid-template-columns:1fr}.result-panel{margin-top:6px}pre{max-height:360px}}@media(max-width:700px){.masthead{padding:18px 16px}.masthead .badge{display:none}.connection{padding:18px 16px}.connection form{grid-template-columns:1fr 1fr}.token-field{grid-column:1/-1}.layout{display:block}aside{padding:20px 16px;border-right:0;border-bottom:1px solid var(--line)}aside h2{margin-bottom:12px}.account-list{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0}.workspace{padding:24px 16px}.workspace-head{display:block}.workspace-head .badge{display:inline-block;margin-top:12px}h2{font-size:25px}.nav{margin-left:0;margin-right:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:4px}.nav button{padding:10px 5px;font-size:15px;min-width:0}.field-grid{grid-template-columns:1fr}.account-actions{display:grid;grid-template-columns:1fr 1fr}.workgrid{gap:24px}.form-actions button{flex:1}.challenge .row button{flex:1}dialog{padding:20px}dl{grid-template-columns:86px minmax(0,1fr)}.dialog-actions button{flex:1}footer{padding:18px 16px}}@media(prefers-reduced-motion:no-preference){dialog[open]{animation:review-in .16s cubic-bezier(.16,1,.3,1)}@keyframes review-in{from{transform:translateY(8px)}to{transform:translateY(0)}}
+:root{color-scheme:dark;--bg:#171d25;--shell:#101822;--panel:#202e3d;--inset:#121d29;--line:#3c5269;--text:#edf3f9;--muted:#b7c8d9;--blue:#66c0f4;--action:#1774ae;--danger:#ffb7a9;--ok:#b4dfa1;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}::selection{background:var(--blue);color:var(--shell)}:focus-visible{outline:3px solid var(--blue);outline-offset:3px}a{color:var(--blue);text-underline-offset:4px}button,input,select,textarea{font:inherit}button{min-height:44px;border:1px solid var(--line);border-radius:3px;background:#2b4055;color:var(--text);padding:10px 16px;cursor:pointer}button:hover:not(:disabled){background:#36516b}button.primary{background:var(--action);border-color:#409bcd}button.primary:hover:not(:disabled){background:#2187c1}button:disabled{opacity:.5;cursor:not-allowed}input,select,textarea{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:2px;background:var(--inset);color:var(--text);caret-color:var(--blue)}input::placeholder,textarea::placeholder{color:var(--muted)}input[type=checkbox]{width:20px;min-height:20px;accent-color:var(--blue);flex-shrink:0}label{display:block;font-weight:600;margin-bottom:6px}small,.muted{color:var(--muted)}small{display:block;line-height:1.6;margin-top:5px}h1,h2,h3,p{margin:0}h1{font-size:20px;letter-spacing:.02em}h2{font-size:28px;font-weight:600}h3{font-size:18px;font-weight:600}p{line-height:1.65;max-width:72ch}.skip{position:absolute;top:-100px;left:16px;z-index:4;background:var(--shell);padding:12px}.skip:focus{top:8px}.masthead{background:var(--shell);border-bottom:1px solid var(--line);padding:22px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px}.wordmark{display:flex;align-items:center;gap:12px}.mark{width:32px;height:32px;color:var(--blue)}.badge{font-size:12px;border:1px solid var(--line);padding:5px 9px;color:var(--muted);white-space:nowrap}.connection{padding:22px 32px;background:#1b2938;border-bottom:1px solid var(--line)}.connection form{display:grid;grid-template-columns:minmax(220px,520px) auto auto;gap:12px;align-items:end;max-width:900px}.connection p{margin-top:10px;font-size:13px}.layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 200px)}aside{padding:28px 20px;background:var(--shell);border-right:1px solid var(--line)}aside h2{font-size:18px;margin-bottom:20px}.account-list{display:grid;gap:7px;margin:16px 0 24px}.account-list button{text-align:left;overflow-wrap:anywhere}.account-list button[aria-pressed=true]{background:#254b69;border-color:var(--blue)}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.account-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.account-actions button{padding:8px}.workspace{min-width:0;padding:28px 32px 40px}.workspace-head{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:24px}.workspace-head p{margin-top:6px}.nav{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:26px;padding-bottom:10px;scrollbar-width:thin}.nav button{background:transparent;border-color:transparent;white-space:nowrap;color:var(--muted)}.nav button[aria-pressed=true]{background:#254b69;color:var(--text);border-color:#5283a5}.workgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px}.editor{min-width:0}.editor>p{margin:10px 0 20px}.operation-select{margin-bottom:22px}.operation-note{margin:12px 0 20px;color:var(--muted)}.fields{display:grid;gap:18px}.field{min-width:0}.field-check{display:flex;align-items:center;gap:10px}.field-check label{margin:0}.form-actions{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}.result-panel{background:var(--inset);border:1px solid var(--line);min-width:0;align-self:start}.result-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.result-head h3{font-size:16px}pre{font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:20px;max-height:560px;overflow:auto;font-variant-numeric:tabular-nums;scrollbar-color:#49647c var(--inset)}.status{padding:14px 0;color:var(--muted);min-height:52px;overflow-wrap:anywhere}.status[data-tone=error]{color:var(--danger)}.status[data-tone=success]{color:var(--ok)}.challenge{margin-top:20px;padding:18px;background:var(--panel);border:1px solid var(--line)}
+.upload-label{display:inline-block;margin:6px 0;padding:8px 14px;background:var(--action);border:0;color:var(--text);font:inherit;cursor:pointer;border-radius:3px}
+.upload-label:hover{filter:brightness(1.1)}
+#qr-image{display:block}.challenge p{margin:8px 0 12px}.challenge canvas{display:block;max-width:100%;height:auto;background:#fff;margin:16px 0;image-rendering:pixelated}.challenge input{max-width:130px}.challenge a{display:block;overflow-wrap:anywhere;margin:12px 0}.challenge .row{margin-top:12px}[hidden]{display:none!important}.empty{border:1px dashed var(--line);padding:24px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:18px 32px;font-size:12px;color:var(--muted)}dialog{max-width:640px;width:calc(100% - 32px);max-height:90dvh;overflow:auto;border:1px solid #6988a4;border-radius:4px;background:var(--panel);color:var(--text);padding:28px;box-shadow:0 24px 80px #0008}dialog::backdrop{background:#070e18cc}dialog h2{font-size:24px}dialog p{margin:12px 0}dl{display:grid;grid-template-columns:105px minmax(0,1fr);gap:12px;margin:22px 0}dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.ack{display:flex;align-items:start;gap:12px;padding:16px 0;border-top:1px solid var(--line)}.ack label{font-size:14px;line-height:1.65}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.retry-note{font-size:13px;color:var(--muted);margin-top:14px!important}@media(min-width:1600px){.workspace{padding:36px 48px}.workgrid{gap:40px}}@media(max-width:1050px){.layout{grid-template-columns:210px minmax(0,1fr)}.workspace{padding:24px}.workgrid{grid-template-columns:1fr}.result-panel{margin-top:6px}pre{max-height:360px}}@media(max-width:700px){.masthead{padding:18px 16px}.masthead .badge{display:none}.connection{padding:18px 16px}.connection form{grid-template-columns:1fr 1fr}.token-field{grid-column:1/-1}.layout{display:block}aside{padding:20px 16px;border-right:0;border-bottom:1px solid var(--line)}aside h2{margin-bottom:12px}.account-list{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0}.account-actions{display:flex;flex-wrap:wrap}.workspace{padding:24px 16px}.workspace-head{display:block}.workspace-head .badge{display:inline-block;margin-top:12px}h2{font-size:25px}.nav{margin-left:0;margin-right:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:4px}.nav button{padding:10px 5px;font-size:13px}.workgrid{gap:24px}.form-actions button{flex:1}.challenge .row button{flex:1}dialog{padding:20px}dl{grid-template-columns:86px minmax(0,1fr)}.dialog-actions button{flex:1}footer{padding:18px 16px}}@media(prefers-reduced-motion:no-preference){dialog[open]{animation:review-in .16s cubic-bezier(.16,1,.3,1)}@keyframes review-in{from{transform:translateY(8px)}to{transform:translateY(0)}}
 </style></head><body>
 <a class="skip" href="#workspace">跳转到操作区</a>
 <header class="masthead"><div class="wordmark"><svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 9h22v14H5zM11 9v14M21 9v14M5 16h22" stroke="currentColor" stroke-width="2"/></svg><h1>STEAM WORKER</h1></div><span class="badge">独立账户控制台</span></header>
-<section class="connection" aria-label="API 连接"><form id="connection-form"><div class="token-field"><label for="token">API 访问令牌</label><input id="token" type="password" autocomplete="off" placeholder="粘贴令牌以连接" required></div><button class="primary" id="connect" type="submit">连接</button><button id="disconnect" type="button">断开连接</button></form><p id="connection-state" aria-live="polite">未连接 · 令牌仅保存在页面内存中，不写入浏览器存储</p></section>
-<div class="layout"><aside aria-label="账户选择"><h2>账户</h2><p class="muted">为每个请求选择账户。</p><div id="accounts" class="account-list"></div><label for="account">账户标识</label><input id="account" autocomplete="off" maxlength="64" aria-describedby="account-hint account-error" placeholder="例如 audit-synthetic-01"><small id="account-hint">1–64 位，以字母或数字开头，其余可用连字符和下划线。新标识需先创建账户。</small><small id="account-error" class="account-error" hidden></small><div class="account-actions"><button id="account-info" type="button">查看账户</button><button id="create-account" type="button">创建账户</button></div></aside>
-<main id="workspace" class="workspace" tabindex="-1"><div class="workspace-head"><div><h2>账户工作台</h2><p class="muted">先查看状态，更改前请审核。</p></div><span id="active-account" class="badge">尚未选择账户</span></div>
-<p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p>
+<section class="connection" aria-label="API 连接"><form id="connection-form"><div class="token-field"><label for="token">API 访问令牌</label><input id="token" type="password" autocomplete="off" placeholder="粘贴令牌以连接" required></div><button class="primary" id="connect" type="submit">连接</button><button id="disconnect" type="button">断开连接</button></form><p id="connection-state">未连接 · 令牌仅保存在页面内存中，不写入浏览器存储</p></section>
+<div class="layout"><aside aria-label="账户选择"><h2>账户</h2><p class="muted">为每个请求选择账户。</p><div id="accounts" class="account-list"></div><label for="account">账户标识</label><input id="account" autocomplete="off" maxlength="64" placeholder="输入账户标识"><small>没有账户列表权限时，仍可手动输入。</small><div class="account-actions"><button id="account-info" type="button">查看账户</button><button id="create-account" type="button">创建账户</button></div></aside>
+<main id="workspace" class="workspace" tabindex="-1"><div class="workspace-head"><div><h2>账户工作台</h2><p class="muted">先查看状态，更改前请审核。</p></div><span class="badge">操作以服务器目录为准</span></div>
 <nav class="nav" aria-label="工作流程"><button type="button" data-group="login" aria-pressed="true">登录</button><button type="button" data-group="inventory" aria-pressed="false">库存</button><button type="button" data-group="market" aria-pressed="false">市场</button><button type="button" data-group="trade" aria-pressed="false">交易</button><button type="button" data-group="confirmations" aria-pressed="false">确认事项</button><button type="button" data-group="advanced" aria-pressed="false">高级</button></nav>
 <div class="workgrid"><section class="editor" aria-labelledby="workflow-title"><h3 id="workflow-title">登录</h3><p class="muted">字段和权限由此服务器提供。留空的选填字段不会提交。</p><div id="empty" class="empty">连接后即可查看支持的操作。</div><form id="operation-form" hidden><div class="operation-select"><label for="operation">操作</label><select id="operation"></select><p id="operation-description" class="operation-note"></p><span id="operation-policy" class="badge"></span></div><div id="fields" class="fields"></div><div class="form-actions"><button id="run" class="primary" type="submit">执行操作</button><button id="retry" type="button" disabled>手动重试</button></div><p class="retry-note">写入绝不自动重试。手动重试会复用最近一次不含敏感信息的请求及其幂等键。</p></form>
-<section id="challenge" class="challenge" aria-labelledby="challenge-title" hidden><h3 id="challenge-title">Steam 登录验证</h3><p id="challenge-status"></p><canvas id="challenge-qr" role="img" aria-label="Steam 登录验证二维码；也可使用下方的验证链接" hidden></canvas><a id="challenge-link" target="_blank" rel="noopener noreferrer" hidden>打开 Steam 登录验证</a><label for="poll-interval">轮询间隔（秒）</label><input id="poll-interval" type="number" min="3" max="30" step="1" value="5"><small>最多检查登录状态 20 次。会话写入需要明确的批量授权；每次使用新的幂等键。</small><div class="row"><button id="poll-login" type="button" disabled>授权登录轮询</button><button id="stop-poll" type="button" disabled>停止轮询</button></div></section></section>
-<section class="result-panel" aria-labelledby="result-title"><div class="result-head"><h3 id="result-title">响应查看器</h3><button id="clear-result" type="button">清空</button></div><pre id="output" tabindex="0">尚未发送请求。请先连接并选择账户。</pre></section></div></main></div>
+<section id="challenge" class="challenge" aria-labelledby="challenge-title" hidden><h3 id="challenge-title">Steam 登录验证</h3><p id="challenge-status"></p><canvas id="challenge-qr" role="img" aria-label="Steam 登录验证二维码；也可使用下方的验证链接" hidden></canvas><a id="challenge-link" target="_blank" rel="noopener noreferrer" hidden>打开 Steam 登录验证</a><label for="poll-interval">轮询间隔（秒）</label><input id="poll-interval" type="number" min="3" max="30" step="1" value="5"><small>最多检查登录状态 20 次。会话写入需要明确的批量授权；每次使用新的幂等键。</small><div class="row"><button id="poll-login" type="button" disabled>授权登录轮询</button><button id="stop-poll" type="button" disabled>停止轮询</button></div></section>
+<section id="qr-upload" class="challenge" aria-labelledby="qr-upload-title"><h3 id="qr-upload-title">二维码截图识别</h3><p class="muted">截图官方客户端的登录二维码并上传，自动识别其中的链接填入“官方客户端二维码链接”字段。识别在本机浏览器内完成，截图不会上传到任何服务器。</p><label for="qr-image" class="upload-label">选择二维码截图</label><input id="qr-image" type="file" accept="image/*"><p id="qr-upload-status" class="muted" role="status"></p></section></section>
+<section class="result-panel" aria-labelledby="result-title"><div class="result-head"><h3 id="result-title">响应查看器</h3><button id="clear-result" type="button">清空</button></div><pre id="output" tabindex="0">尚未发送请求。请先连接并选择账户。</pre></section></div><p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p></main></div>
 <footer>向 Steam 致敬，并非 Steam 官方产品。不使用第三方资源或验证服务。在共享设备上使用完毕后，请断开连接。</footer>
 <dialog id="write-dialog" aria-labelledby="review-title" aria-describedby="review-warning"><h2 id="review-title">审核此次写入</h2><p id="review-warning"></p><dl><dt>操作</dt><dd id="review-operation"></dd><dt>账户</dt><dd id="review-account"></dd><dt>金额</dt><dd id="review-amount"></dd><dt>物品</dt><dd id="review-item"></dd><dt>接收方</dt><dd id="review-recipient"></dd></dl><details><summary>全部参数（机密已隐藏）</summary><pre id="review-arguments"></pre></details><div class="ack"><input id="acknowledge" type="checkbox"><label for="acknowledge">我已核对账户、金额、物品和接收方，并授权此次写入。</label></div><div class="dialog-actions"><button id="cancel-write" type="button" autofocus>取消</button><button id="confirm-write" class="primary" type="button" disabled>授权写入</button></div></dialog>
 <script>/* 
@@ -629,9 +632,8 @@ var qrcodegen;
 
 'use strict';
 const $ = id => document.getElementById(id);
-let token = '', registry = [], activeGroup = 'login', pendingWrite = null, retryWrite = null, loginHandle = '', qrReview = null, pollController = null, busy = false, generation = 0, selectedAccount = '', challengeExpiresAt = 0;
-const activeRequests = new Set();
-const secretKey = /password|passwd|secret|token|cookie|authorization|session_id|revocation|envelope|private_key|review_handle|signature|api_key|apikey|request_id|client_id|login_handle|challenge_url|qr_url|qr_challenge|code/i;
+let token = '', registry = [], activeGroup = 'login', pendingWrite = null, retryWrite = null, loginHandle = '', qrReview = null, pollController = null, busy = false, generation = 0;
+const secretKey = /password|passwd|secret|token|cookie|authorization|session_id|revocation|envelope|private_key|login_handle|challenge_url|qr_url|qr_challenge|code/i;
 const operationLabels = {
   "account.create": "创建账户",
   "account.info": "查看账户",
@@ -649,6 +651,8 @@ const operationLabels = {
   "session.cancel": "取消登录",
   "session.status": "查看会话状态",
   "guard.configure": "配置 Steam 令牌",
+  "guard.enroll": "开通手机令牌 2FA（第一步）",
+  "guard.finalize": "激活手机令牌（第二步）",
   "wallet.info": "查看钱包信息",
   "inventory.get": "查看库存",
   "market.get_user_listings": "查看我的市场挂单",
@@ -718,6 +722,7 @@ const fieldLabels = {
   "received": "包含已收到报价",
   "cursor": "分页游标",
   "partner": "交易方 SteamID64",
+  "activation_code": "短信激活验证码",
   "to_partner": "给予对方的物品",
   "from_partner": "从对方接收的物品",
   "message": "交易留言",
@@ -761,6 +766,8 @@ const operationDescriptions = {
   "session.cancel": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
   "session.status": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
   "guard.configure": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "guard.enroll": "为当前手机平台会话开通 Steam 手机令牌（2FA）。Steam 会将激活验证码发送到账号绑定的邮箱（无手机号时）或手机；共享密钥自动保存到加密存储，不会显示。",
+  "guard.finalize": "输入收到的激活验证码（无手机号时发送到账号邮箱），完成手机令牌激活。激活后本服务可本地生成登录验证码并批准官方客户端扫码登录。",
   "trade.accept": "接受一次交易报价。接受报价需要发送方的 SteamID64；待确认事项绝不自动批准。",
   "trade.decline": "拒绝一次交易报价。接受报价需要发送方的 SteamID64；待确认事项绝不自动批准。",
   "trade.cancel": "撤销一次交易报价。接受报价需要发送方的 SteamID64；待确认事项绝不自动批准。",
@@ -777,6 +784,7 @@ const fieldHelp = {
   "currency": "填写与已读取的钱包信息一致的货币编号。",
   "partner": "填写交易方的 SteamID64。",
   "auth_code": "填写 5 至 8 位字母或数字组成的验证码。",
+  "activation_code": "填写 Steam 发到账号绑定手机的短信验证码（仅字母数字）。",
   "confirmation_ids": "以 JSON 数组填写确认事项标识，不得重复。",
   "to_partner": "以 JSON 数组填写物品，每项包含 appid、contextid、assetid 和 amount；字段名保持 API 原样。",
   "from_partner": "以 JSON 数组填写物品，每项包含 appid、contextid、assetid 和 amount；字段名保持 API 原样。"
@@ -802,90 +810,22 @@ function scrub(value, depth = 0) {
   return value;
 }
 function status(message, tone = '') { $('status').textContent = message; $('status').dataset.tone = tone; }
-function accountPath(account = $('account').value.trim()) {
-  const message = !account ? '请先选择已有账户，或输入新标识并点击“创建账户”。' : !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(account) ? '账户标识需为 1–64 位，以字母或数字开头，其余仅用字母、数字、连字符或下划线。' : '';
-  if (message) { $('account').setAttribute('aria-invalid','true'); $('account-error').textContent=message; $('account-error').hidden=false; $('account').focus(); throw Error(message); }
-  $('account').removeAttribute('aria-invalid'); $('account-error').hidden=true;
-  return '/v1/accounts/' + encodeURIComponent(account);
-}
-function cancelPoll() {
-  const controller=pollController; pollController=null;
-  if (controller) { controller.abort(); setBusy(false); }
-  $('stop-poll').disabled=true;
-}
-function resetChallenge() {
-  qrReview=null; cancelPoll(); loginHandle=''; challengeExpiresAt=0; $('challenge').hidden=true;
-  $('challenge-link').hidden=true; $('challenge-link').removeAttribute('href'); $('challenge-qr').hidden=true;
-  $('challenge-status').textContent=''; $('poll-login').disabled=true;
-  for(const name of ['login_handle','review_handle'])if($('arg-'+name))$('arg-'+name).value='';
-  const canvas=$('challenge-qr'); canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-}
-function setBusy(value) {
-  busy=value;
-  $('run').disabled=value || !token || !$('operation').value; $('connect').disabled=value;
-  $('disconnect').disabled=!token && !value; $('token').disabled=value;
-  $('create-account').disabled=value || !token; $('account-info').disabled=value || !token;
-  $('account').disabled=value; $('operation').disabled=value;
-  $('retry').disabled=value || !token || !retryWrite;
-  for (const input of $('fields').querySelectorAll('[data-argument]')) input.disabled=value;
-  for (const button of document.querySelectorAll('[data-group], #accounts button')) button.disabled=value;
-  $('poll-login').disabled=value || !token || !loginHandle || !registry.some(x=>x.name==='session.poll');
-  $('stop-poll').disabled=!pollController;
-  $('operation-form').setAttribute('aria-busy',String(value));
-}
-const apiMessages = {
-  account_not_found:'账户尚未创建。请从列表选择已有账户，或点击“创建账户”。',
-  account_exists:'账户已存在。请点击“查看账户”，无需重复创建。',
-  unauthorized:'API 访问令牌无效或已失效。请重新连接。',
-  scope_denied:'当前 API 令牌缺少此操作所需权限。', account_denied:'当前 API 令牌没有此账户的访问权限。',
-  authentication_required:'此账户尚未完成 Steam 登录。请先在“登录”中查看会话状态。',
-  invalid_arguments:'参数未通过服务器校验。请检查必填项、字段格式及数值范围。',
-  invalid_json:'请求 JSON 格式有误。请检查数组和对象参数。',
-  operation_not_found:'服务器目录中已无此操作。请重新连接以加载目录。',
-  not_found:'请求路径不存在。请重新连接并核对账户和操作。',
-  write_confirmation_required:'服务器要求写入确认。请重新打开审核弹窗。',
-  idempotency_key_required:'写入幂等键缺失或格式有误。请重新审核。',
-  idempotency_conflict:'此幂等键对应另一组参数。请先核对原请求。',
-  outcome_unknown:'服务器记录的写入结果尚未确定。请先检查账户状态。',
-  succeeded_result_not_cached:'该写入已经完成，但响应未缓存。请查看当前状态，勿重复提交。',
-  rate_limited:'本机请求频率已达上限。请稍后手动操作。',
-  upstream_rate_limited:'Steam 请求频率已达上限。请稍后检查状态。',
-  wallet_currency_required:'请先读取钱包信息，确认货币编号后再审核金额。',
-  wallet_currency_mismatch:'货币编号与钱包信息不一致。请重新读取钱包并核对。',
-  login_required:'此账户没有待完成的登录验证。请重新发起登录。',
-  login_handle_mismatch:'登录句柄与当前验证不匹配。请重新查看会话状态。',
-  login_attempt_limit:'登录验证检查次数已达上限。请重新发起登录。',
-  login_not_found:'登录验证已失效。请重新发起登录验证。',
-  login_expired:'登录验证已过期。请重新发起登录验证。',
-  guard_required:'此账户缺少 Steam 令牌配置。请先检查登录与令牌状态。',
-  body_too_large:'请求参数超出服务器大小限制。请减少批量项目。'
-};
-const rejectedWrites = new Set(['account_not_found','account_exists','unauthorized','scope_denied','account_denied','invalid_arguments','invalid_json','operation_not_found','not_found','write_confirmation_required','idempotency_key_required','idempotency_conflict','rate_limited','wallet_currency_required','wallet_currency_mismatch','body_too_large']);
-function apiMessage(code, httpStatus) {
-  const message=apiMessages[code] || ({401:'请求需要有效的身份凭据。请检查 API 连接或 Steam 会话。',403:'当前请求被服务器拒绝。请检查账户和操作权限。',404:'请求资源不存在。请核对账户和操作。',429:'请求频率已达上限。请稍后手动操作。'}[httpStatus]) || '服务器未完成请求。请检查状态后手动操作。';
-  return message + '（HTTP ' + httpStatus + (code ? ' · ' + code : '') + '）';
-}
-function hasSensitive(value) {
-  return value && typeof value==='object' && Object.entries(value).some(([key,item])=>secretKey.test(key) || hasSensitive(item));
-}
+function accountPath() { const slug = $('account').value.trim(); if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) throw Error('请输入有效的账户标识（字母、数字、连字符或下划线）。'); return '/v1/accounts/' + encodeURIComponent(slug); }
+function cancelPoll() { if (pollController) pollController.abort(); pollController = null; $('stop-poll').disabled = true; }
+function resetChallenge() { qrReview=null; cancelPoll(); loginHandle = ''; $('challenge').hidden = true; $('challenge-link').removeAttribute('href'); $('challenge-qr').hidden=true; const canvas=$('challenge-qr'); canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); }
+function setBusy(value) { busy = value; $('run').disabled = value || !$('operation').value; $('connect').disabled = value; $('create-account').disabled = value || !token; $('account-info').disabled = value || !token; $('account').disabled=value; $('operation').disabled=value; $('retry').disabled = value || !retryWrite; }
 async function request(intent, signal) {
   if (!token) throw Error('请先使用 API 令牌连接。');
-  const headers={Authorization:'Bearer '+token,'Content-Type':'application/json'};
-  if (intent.mutating) { headers['X-Confirm-Write']='true'; headers['Idempotency-Key']=intent.key; }
-  const controller=new AbortController(), timeout=setTimeout(()=>controller.abort(),65000);
-  activeRequests.add(controller);
-  const abort=()=>controller.abort(); if (signal) { if(signal.aborted)abort(); else signal.addEventListener('abort',abort,{once:true}); }
+  const headers = { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' };
+  if (intent.mutating) { headers['X-Confirm-Write'] = 'true'; headers['Idempotency-Key'] = intent.key; }
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 65000);
+  const abort = () => controller.abort(); if (signal) { if (signal.aborted) abort(); else signal.addEventListener('abort', abort, {once:true}); }
   try {
-    const response=await fetch(intent.path,{method:intent.method,headers,body:intent.body===undefined ? undefined : JSON.stringify(intent.body),cache:'no-store',redirect:'error',signal:controller.signal});
-    let data;
-    try { data=await response.json(); } catch (error) { if(response.ok)throw error; }
-    if (!response.ok) {
-      const rawCode=data && data.error && data.error.code;
-      const code=typeof rawCode==='string' && /^[a-z][a-z0-9_]{0,100}$/.test(rawCode) ? rawCode : '';
-      const error=Error(apiMessage(code,response.status)); error.httpStatus=response.status; error.code=code; throw error;
-    }
+    const response = await fetch(intent.path, {method:intent.method, headers, body:intent.body === undefined ? undefined : JSON.stringify(intent.body), cache:'no-store', redirect:'error', signal:controller.signal});
+    const data = await response.json();
+    if (!response.ok) { const error = Error('请求失败（HTTP ' + response.status + '）。请检查账户权限、参数和服务器状态。'); error.httpStatus = response.status; throw error; }
     return data;
-  } finally { clearTimeout(timeout); activeRequests.delete(controller); if(signal)signal.removeEventListener('abort',abort); }
+  } finally { clearTimeout(timeout); if (signal) signal.removeEventListener('abort',abort); }
 }
 function safeChallengeURL(value) {
   if (typeof value !== 'string' || value.length > 2048) return null;
@@ -911,29 +851,21 @@ function authResult(data, operation) {
     $('output').textContent=JSON.stringify({说明:'请核对设备和位置，仅批准您本人正在登录的客户端。',设备信息:visible},null,2);
     status('扫码请求已读取，请核对设备和位置，再选择批准或拒绝。');return false;
   }
-  if(operation==='session.qr_approve'||operation==='session.qr_deny'){qrReview=null;$('output').textContent=JSON.stringify(scrub(data),null,2);status(operationLabel(operation)+'已完成。','success');return false;}
-  if (operation==='guard.configure') { $('output').textContent=JSON.stringify(scrub(data),null,2); status(operationLabel(operation)+'已完成。','success'); return false; }
-  if (operation==='session.qr' || operation==='session.credentials' || operation==='session.cancel' || ['authenticated','unauthenticated','cancelled'].includes(result.status)) resetChallenge();
-  if (typeof result.expires_at==='number') challengeExpiresAt=result.expires_at;
+  if(operation==='session.qr_approve'||operation==='session.qr_deny'){qrReview=null;$('output').textContent=JSON.stringify(scrub(data),null,2);return false;}
   if (typeof result.login_handle === 'string' && result.login_handle.length <= 512) loginHandle = result.login_handle;
-  const url = safeChallengeURL(result.challenge_url || result.qr_url || result.qr_challenge || (loginHandle ? $('challenge-link').getAttribute('href') : null));
+  const url = safeChallengeURL(result.challenge_url || result.qr_url || result.qr_challenge || (operation==='session.poll' ? $('challenge-link').href : null));
   $('challenge').hidden = !loginHandle && !url;
   $('challenge-link').hidden = !url; renderQR(url);
   if (url) { $('challenge-link').href = url; $('challenge-link').textContent = '打开 Steam 登录验证'; }
   else $('challenge-link').removeAttribute('href');
   const interval = Number(result.poll_interval_seconds || result.poll_interval || 5);
   $('poll-interval').value = String(Number.isFinite(interval) ? Math.min(30,Math.max(3,interval)) : 5);
-  setBusy(busy);
+  $('poll-login').disabled = !loginHandle || !registry.some(x => x.name === 'session.poll');
   $('challenge-status').textContent = url ? '请使用 Steam 手机应用扫描二维码，或打开验证链接。二维码仅在本页生成，不会发送给第三方服务。' : '登录验证尚未完成。如需 Steam 令牌验证码，请选择“提交登录验证码”操作。';
-  const safe = Object.create(null); for (const k of ['authenticated','pending','complete','success','requires_code','expires_at','guard_configured','ready_for_web','configured']) if (typeof result[k] === 'boolean' || typeof result[k] === 'number') safe[k] = result[k];
-  if (['pending','authenticated','unauthenticated','cancelled'].includes(result.status)) safe.status=result.status;
+  const safe = Object.create(null); for (const k of ['status','authenticated','pending','complete','success','requires_code','expires_at']) if (typeof result[k] === 'boolean' || typeof result[k] === 'number') safe[k] = result[k];
   $('output').textContent = JSON.stringify({operation, result:safe, note:'已省略认证机密和原始响应。'},null,2);
   const complete = result.authenticated === true || result.complete === true || result.status === 'authenticated';
   if (complete) { resetChallenge(); status('Steam 登录已完成。会话凭据不会显示。','success'); }
-  else if (result.status==='cancelled') status('登录验证已取消。二维码和登录句柄已清除。');
-  else if (result.status==='unauthenticated') status('此账户尚未登录 Steam。请发起登录验证。');
-  else if (loginHandle) status('登录验证等待完成。请扫描二维码或提交验证码。');
-  else status(operationLabel(operation)+'已完成。','success');
   return complete;
 }
 function groups(op) { const n = op.name; if (/^(session\.|guard\.|login\.|auth\.)/.test(n)) return 'login'; if (/inventory/.test(n)) return 'inventory'; if (/market/.test(n)) return 'market'; if (/confirmation/.test(n)) return 'confirmations'; if (/trade/.test(n)) return 'trade'; return 'advanced'; }
@@ -945,73 +877,25 @@ function renderOperations() {
   $('empty').textContent = token ? '此服务器未提供“' + groupLabels[activeGroup] + '”操作。请选择“高级”查看全部可用操作。此页面不模拟任何操作。' : '请使用 API 令牌连接，以加载此服务器支持的操作。';
   renderFields();
 }
-function fieldGroup(name, op) {
-  if (/^(price|subtotal|fee|to_receive|currency|quantity|amount)$/.test(name)) return '金额与数量';
-  if (/^(partner|to_partner|from_partner|countered_id|message|token)$/.test(name)) return '交易对象与物品';
-  if (/^(app|context_id|asset_id|listing_id|buy_order_id|trade_offer_id|market_hash_name|obj|confirmation_id|confirmation_ids|accept)$/.test(name)) return '物品与操作目标';
-  if (groups(op)==='login') return /^(platform|persistence|device_friendly_name|renew_refresh_token|clear)$/.test(name) ? '会话选项' : '登录与验证';
-  return '查询选项';
-}
-function schemaHelp(schema, name) {
-  const parts=[];
-  if(fieldHelp[name])parts.push(fieldHelp[name]);
-  if(schema.type==='boolean')parts.push('留空将省略；“否”会明确提交 false，“是”提交 true。');
-  if(schema.type==='string') {
-    if(schema.minLength!==undefined || schema.maxLength!==undefined)parts.push('长度：'+(schema.minLength || 0)+'–'+(schema.maxLength===undefined ? '不限' : schema.maxLength)+' 个字符。');
-    if(schema.format==='uint64')parts.push('使用十进制整数标识，保持文本精度；最大值 18446744073709551615。');
-    else if(schema.pattern)parts.push('格式：'+schema.pattern+'。');
-  }
-  if(schema.type==='integer' || schema.type==='number')parts.push((schema.type==='integer' ? '整数' : '数值')+'范围：'+(schema.minimum===undefined ? '不限' : schema.minimum)+' 至 '+(schema.maximum===undefined ? '不限' : schema.maximum)+'。');
-  if(schema.type==='array') {
-    parts.push('JSON 数组；项目数：'+(schema.minItems || 0)+'–'+(schema.maxItems===undefined ? '不限' : schema.maxItems)+'。');
-    if(schema.uniqueItems)parts.push('项目须唯一。');
-    if(schema.items && schema.items.properties)parts.push('每项字段：'+Object.keys(schema.items.properties).join('、')+'。');
-  }
-  if(schema.type==='object')parts.push('使用 JSON 对象格式。');
-  return parts.join(' ');
-}
 function renderFields() {
-  $('fields').replaceChildren(); const op=registry.find(x=>x.name===$('operation').value);
-  $('run').disabled=!op || !token || busy;
+  $('fields').replaceChildren(); const op = registry.find(x => x.name === $('operation').value); $('run').disabled = !op || busy;
   if (!op) return;
-  $('operation-description').textContent=operationDescriptions[op.name] || '服务器提供的操作；请核对参数和权限后执行。';
-  $('operation-policy').textContent=(op.mutating ? '写入 · 需审核' : '只读')+' · '+scopeLabel(op.scope);
-  $('run').textContent=op.mutating ? '审核写入' : '执行操作';
-  const sections=new Map();
+  $('operation-description').textContent = operationDescriptions[op.name] || '服务器提供的操作；请核对参数和权限后执行。'; $('operation-policy').textContent = (op.mutating ? '写入 · 需审核' : '只读') + ' · ' + scopeLabel(op.scope); $('run').textContent = op.mutating ? '审核写入' : '执行操作';
   for (const [name,schema] of Object.entries(op.schema.properties)) {
-    const group=fieldGroup(name,op);
-    if (!sections.has(group)) {
-      const section=document.createElement('fieldset');section.className='field-group';
-      const legend=document.createElement('legend');legend.textContent=group;
-      const grid=document.createElement('div');grid.className='field-grid';section.append(legend,grid);$('fields').append(section);sections.set(group,grid);
-    }
-    const required=op.schema.required.includes(name), wrapper=document.createElement('div');wrapper.className='field';
-    const label=document.createElement('label'), id='arg-'+name;label.htmlFor=id;label.textContent=(fieldLabels[name] || '自定义参数')+(required ? '（必填）' : '（选填）');
-    const code=document.createElement('span');code.className='field-code';code.textContent=name;label.append(code);
+    const wrapper = document.createElement('div'); wrapper.className = 'field';
+    const label = document.createElement('label'); const id = 'arg-' + name; label.htmlFor = id; label.textContent = fieldLabel(name) + (op.schema.required.includes(name) ? '（必填）' : '（选填）');
     let input;
-    if(schema.type==='boolean' || Array.isArray(schema.enum)) {
-      input=document.createElement('select');
-      const values=schema.type==='boolean' ? [false,true] : schema.enum;
-      if(!required) {const blank=document.createElement('option');blank.value='';blank.textContent='省略此字段';input.append(blank);}
-      for(const value of values) {const option=document.createElement('option');option.value=String(value);option.textContent=schema.type==='boolean' ? (value ? '是 · true' : '否 · false') : enumLabel(value);input.append(option);}
-    } else if(schema.type==='array' || schema.type==='object') {
-      input=document.createElement('textarea');input.rows=5;input.placeholder=schema.type==='array' ? '[]' : '{}';wrapper.classList.add('field-wide');
-    } else {
-      input=document.createElement('input');input.type=schema.type==='integer' || schema.type==='number' ? 'number' : secretKey.test(name) ? 'password' : 'text';
-    }
-    input.id=id;input.name=name;input.dataset.argument=name;input.dataset.type=schema.type;input.required=required;input.autocomplete='off';input.spellcheck=false;input.disabled=busy;
-    if(schema.type==='integer')input.step='1';else if(schema.type==='number')input.step='any';
-    if(typeof schema.minimum==='number')input.min=String(schema.minimum);if(typeof schema.maximum==='number')input.max=String(schema.maximum);
-    if(typeof schema.maxLength==='number')input.maxLength=schema.maxLength;if(typeof schema.minLength==='number')input.minLength=schema.minLength;
-    if(typeof schema.pattern==='string')input.pattern=schema.pattern;
-    if(name==='login_handle' && loginHandle)input.value=loginHandle;
-    if(name==='review_handle' && qrReview && qrReview.account===$('account').value.trim())input.value=qrReview.review_handle || '';
-    wrapper.append(label,input);
-    const help=schemaHelp(schema,name);
-    if(help) {const hint=document.createElement('small');hint.id=id+'-help';hint.textContent=help;input.setAttribute('aria-describedby',hint.id);wrapper.append(hint);}
-    sections.get(group).append(wrapper);
+    if (Array.isArray(schema.enum)) { input = document.createElement('select'); if (!op.schema.required.includes(name)) {const blank=document.createElement('option');blank.value='';blank.textContent='不提供';input.append(blank);} for (const value of schema.enum) { const option=document.createElement('option');option.value=String(value);option.textContent=enumLabel(value);input.append(option); } }
+    else if (schema.type === 'array' || schema.type === 'object') { input=document.createElement('textarea'); input.rows=6; input.placeholder=schema.type === 'array' ? '[]' : '{}'; }
+    else { input = document.createElement('input'); input.type = schema.type === 'boolean' ? 'checkbox' : schema.type === 'integer' || schema.type === 'number' ? 'number' : secretKey.test(name) ? 'password' : 'text'; }
+    input.id = id; input.name = name; input.dataset.argument = name; input.dataset.type = schema.type; input.required = schema.type !== 'boolean' && op.schema.required.includes(name); input.autocomplete='off'; input.spellcheck=false;
+    if (schema.type === 'integer') input.step='1'; if (typeof schema.minimum === 'number') input.min=String(schema.minimum); if (typeof schema.maximum === 'number') input.max=String(schema.maximum); if (typeof schema.maxLength === 'number') input.maxLength=schema.maxLength;
+    if (name === 'login_handle' && loginHandle) input.value = loginHandle;
+    if(name==='review_handle'&&qrReview&&qrReview.account===$('account').value.trim())input.value=qrReview.review_handle||'';
+    if (schema.type === 'boolean') { wrapper.classList.add('field-check'); wrapper.append(input,label); } else wrapper.append(label,input);
+    if (schema.description) {const hint=document.createElement('small');hint.id=id+'-help';hint.textContent=fieldHelp[name] || '请按服务器规定的格式填写此参数。';input.setAttribute('aria-describedby',hint.id);wrapper.append(hint);}
+    $('fields').append(wrapper);
   }
-  if(!sections.size) {const note=document.createElement('p');note.className='form-empty';note.textContent='此操作无需填写参数。请核对当前账户后执行。';$('fields').append(note);}
 }
 function readArguments() {
   const args = Object.create(null), op = registry.find(x => x.name === $('operation').value);
@@ -1021,48 +905,16 @@ function readArguments() {
   for (const input of inputs) {
     const submittedValue=values.get(input);
     const name = input.dataset.argument, type = input.dataset.type;
-    if (type === 'boolean') { if (submittedValue!=='') args[name]=submittedValue==='true'; }
+    if (type === 'boolean') { if (input.checked || op.schema.required.includes(name)) args[name]=input.checked; }
     else if (submittedValue !== '') { let value; if(type === 'array' || type === 'object') { try {value=JSON.parse(submittedValue);}catch {throw Error('请为“'+fieldLabel(name)+'”输入有效的 JSON。');} if(type === 'array' ? !Array.isArray(value) : !value || typeof value !== 'object' || Array.isArray(value)) throw Error('“'+fieldLabel(name)+'”需要 JSON '+(type === 'array' ? '数组' : '对象')+'。'); } else value = type === 'integer' || type === 'number' ? Number(submittedValue) : submittedValue; if (typeof value === 'number' && (!Number.isFinite(value) || (type === 'integer' && !Number.isSafeInteger(value)))) throw Error('请为“' + fieldLabel(name) + '”输入有效的数字。'); args[name]=value; }
   }
-  validateValue(op.schema,args,'参数');
   // Clear credentials before any confirmation or network dispatch.
   for (const input of $('fields').querySelectorAll('input[type=password]')) input.value='';
   return args;
 }
-function validateValue(schema, value, label, depth = 0) {
-  if(depth>16)throw Error('参数嵌套层级超出服务器限制。');
-  const fail=message=>{throw Error('“'+label+'”'+message);};
-  if(schema.enum && !schema.enum.includes(value))fail('需选择目录中的有效值。');
-  if(schema.type==='object') {
-    if(!value || typeof value!=='object' || Array.isArray(value))fail('需要 JSON 对象。');
-    for(const name of schema.required || [])if(!Object.prototype.hasOwnProperty.call(value,name))fail('缺少必填字段：'+fieldLabel(name)+'。');
-    for(const [name,item] of Object.entries(value)) {
-      if(['__proto__','constructor','prototype'].includes(name))fail('包含受限字段名。');
-      const sub=schema.properties && schema.properties[name];
-      if(sub)validateValue(sub,item,fieldLabel(name),depth+1);else if(schema.additionalProperties===false)fail('包含目录外的字段：'+name+'。');
-    }
-  } else if(schema.type==='array') {
-    if(!Array.isArray(value))fail('需要 JSON 数组。');
-    if(value.length<(schema.minItems || 0) || schema.maxItems!==undefined && value.length>schema.maxItems)fail('项目数量超出规定范围。');
-    if(schema.items)for(const [index,item] of value.entries())validateValue(schema.items,item,label+' 第 '+(index+1)+' 项',depth+1);
-    if(schema.uniqueItems) {
-      const canonical=item=>Array.isArray(item) ? item.map(canonical) : item && typeof item==='object' ? Object.fromEntries(Object.keys(item).sort().map(key=>[key,canonical(item[key])])) : item;
-      if(new Set(value.map(item=>JSON.stringify(canonical(item)))).size!==value.length)fail('包含重复项目。');
-    }
-  } else if(schema.type==='string') {
-    if(typeof value!=='string')fail('需要文本值。');
-    const length=Array.from(value).length;
-    if(length<(schema.minLength || 0) || schema.maxLength!==undefined && length>schema.maxLength)fail('字符长度超出规定范围。');
-    if(schema.pattern && !new RegExp(schema.pattern).test(value))fail('格式不符：'+schema.pattern+'。');
-    if(schema.format==='uint64' && (!/^(0|[1-9][0-9]{0,19})$/.test(value) || BigInt(value)>18446744073709551615n))fail('需要有效的 64 位无符号整数标识。');
-  } else if(schema.type==='number' || schema.type==='integer') {
-    if(typeof value!=='number' || !Number.isFinite(value) || schema.type==='integer' && !Number.isSafeInteger(value))fail('需要有效的数值。');
-    if(schema.minimum!==undefined && value<schema.minimum || schema.maximum!==undefined && value>schema.maximum)fail('数值超出规定范围。');
-  } else if(schema.type==='boolean' && typeof value!=='boolean')fail('需要布尔值。');
-}
 function summaryValue(args, pattern) { const entries = Object.entries(args).filter(([name]) => pattern.test(name) && !secretKey.test(name)); return entries.length ? entries.map(([name,value]) => fieldLabel(name) + '：' + JSON.stringify(scrub(value))).join('\n') : '此操作未指定'; }
 function reviewWrite(intent, isRetry = false) {
-  cancelPoll(); if($('write-dialog').open)throw Error('请先完成或取消当前审核。'); discardPending(); pendingWrite=intent;
+  cancelPoll(); pendingWrite = intent;
   $('review-operation').textContent = operationLabel(intent.name); $('review-account').textContent = intent.account;
   const args = intent.body && intent.body.arguments || {};
   $('review-amount').textContent = summaryValue(args,/amount|price|quantity|total|subtotal|fee|to_receive|currency/i);
@@ -1074,169 +926,67 @@ function reviewWrite(intent, isRetry = false) {
     $('review-recipient').textContent=JSON.stringify(qrReview.details,null,2);
   }
   $('review-warning').textContent = isRetry ? '手动重试：将复用完全相同的原始请求和幂等键。此前的写入可能已经完成。' : '此操作会更改账户或 Steam 状态。授权前请核对账户和所有参数。';
-  $('acknowledge').checked = false; $('confirm-write').disabled = true; $('write-dialog').showModal(); status(isRetry ? '正在审核原请求的手动重试；未发送请求。' : '正在审核写入；取消或按 Escape 不发送请求。');
+  $('acknowledge').checked = false; $('confirm-write').disabled = true; $('write-dialog').showModal();
 }
 async function dispatch(intent, signal) {
-  const current=generation;setBusy(true);status('正在执行：'+operationLabel(intent.name)+'…');
+  const current = generation; setBusy(true); status('正在执行：' + operationLabel(intent.name) + '…');
   try {
-    const data=await request(intent,signal);
-    if(current!==generation)return;
-    retryWrite=null;
-    if(groups({name:intent.name})==='login')authResult(data,intent.name);
-    else { $('output').textContent=JSON.stringify(scrub(data),null,2);status(operationLabel(intent.name)+'已完成。','success'); }
-    if(intent.name==='account.create') {
-      try { const list=await request({method:'GET',path:'/v1/accounts'});if(current===generation)renderAccounts(Array.isArray(list.accounts) ? list.accounts : []); }
-      catch(error) {if(current===generation)status('账户已创建；账户列表刷新失败。'+errorMessage(error),'error');}
-    }
+    const data = await request(intent,signal);
+    if (current !== generation) return;
+    retryWrite = null;
+    if (groups({name:intent.name}) === 'login') authResult(data,intent.name);
+    else $('output').textContent = JSON.stringify(scrub(data),null,2);
+    status(operationLabel(intent.name) + '已完成。','success');
     return data;
-  } catch(error) {
-    if(current!==generation || signal && signal.aborted)return;
-    const rejected=error.httpStatus>=400 && error.httpStatus<500 && rejectedWrites.has(error.code);
-    const succeeded=error.code==='succeeded_result_not_cached';
-    const uncertain=intent.mutating && !rejected && !succeeded;
-    retryWrite=uncertain && !intent.sensitive ? intent : null;
-    const warning=uncertain ? ' 尚未确认写入是否完成。请先检查状态，勿作为新操作重复提交。'+(!intent.sensitive ? ' 仅“手动重试”复用原请求及幂等键。' : ' 敏感请求已清除，不保留手动重试。') : intent.mutating && rejected ? ' 此次写入被拒绝；请处理原因后重新审核。' : '';
-    $('output').textContent=JSON.stringify({操作:intent.name,账户:intent.account,HTTP:error.httpStatus || null,错误码:error.code || null,说明:errorMessage(error)},null,2);
-    status(errorMessage(error)+warning,'error');
-  } finally {if(intent.sensitive)intent.body=undefined;if(current===generation)setBusy(false);}
+  } catch (error) {
+    if (current !== generation || signal && signal.aborted) return;
+    if (intent.mutating && !intent.sensitive) retryWrite = intent;
+    status(intent.mutating ? '尚未确认写入是否完成。请勿将其作为新操作再次提交。请先检查状态；如需复用完全相同的请求，仅使用“手动重试”。' : error.name === 'AbortError' ? '请求超时或已取消。您可以手动发起新的只读请求。' : errorMessage(error),'error');
+  } finally { if (intent.sensitive && intent.body) intent.body = undefined; if (current === generation) setBusy(false); }
 }
-function manualIntent(op,args) {
-  const account=$('account').value.trim();
-  return {name:op.name,account,method:'POST',path:accountPath(account)+'/operations/'+encodeURIComponent(op.name),body:{arguments:args},mutating:op.mutating,sensitive:hasSensitive(args),key:op.mutating ? crypto.randomUUID() : undefined};
-}
-function discardPending() {if(pendingWrite)pendingWrite.body=undefined;pendingWrite=null;}
-function cancelReview() {
-  discardPending();$('acknowledge').checked=false;$('confirm-write').disabled=true;
-  if($('write-dialog').open)$('write-dialog').close();
-  status('审核已取消，未发送写入请求。');
-}
-$('operation-form').addEventListener('invalid',event=>{
-  const input=event.target;
-  const message=input.validity.valueMissing ? '请填写必填字段。' : input.validity.patternMismatch ? '字段格式与目录规定不符。' : input.validity.rangeUnderflow || input.validity.rangeOverflow ? '数值超出目录范围。' : '请检查字段长度、数值与格式。';
-  status(fieldLabel(input.name)+'：'+message,'error');
-},true);
-$('operation-form').addEventListener('submit',event=>{
-  event.preventDefault();if(busy)return;cancelPoll();retryWrite=null;setBusy(false);
-  try {accountPath();const op=registry.find(x=>x.name===$('operation').value);if(!op)throw Error('请选择操作。');const intent=manualIntent(op,readArguments());if(intent.mutating)reviewWrite(intent);else void dispatch(intent);}
-  catch(error) {status(errorMessage(error),'error');}
-});
+function manualIntent(op,args) { return {name:op.name, account:$('account').value.trim(), method:'POST', path:accountPath()+'/operations/'+encodeURIComponent(op.name), body:{arguments:args}, mutating:op.mutating, sensitive:Object.keys(args).some(k=>secretKey.test(k)), key:op.mutating ? crypto.randomUUID() : undefined}; }
+function discardPending() { if (pendingWrite) pendingWrite.body=undefined; pendingWrite=null; }
+$('operation-form').addEventListener('submit',event=>{event.preventDefault(); if (busy) return; cancelPoll(); retryWrite=null; try {const op=registry.find(x=>x.name===$('operation').value); if (!op) throw Error('请选择操作。'); const intent=manualIntent(op,readArguments()); if(intent.mutating) reviewWrite(intent); else void dispatch(intent);} catch(error) {status(errorMessage(error),'error');} });
 $('acknowledge').addEventListener('change',()=>{$('confirm-write').disabled=!$('acknowledge').checked;});
-$('confirm-write').addEventListener('click',()=>{
-  if(!pendingWrite || !$('acknowledge').checked || busy)return;
-  const intent=pendingWrite;pendingWrite=null;$('confirm-write').disabled=true;$('write-dialog').close();
-  if(intent.polling)void startPolling(intent);else void dispatch(intent);
-});
-$('cancel-write').addEventListener('click',cancelReview);
-$('write-dialog').addEventListener('cancel',event=>{event.preventDefault();cancelReview();});
-$('write-dialog').addEventListener('close',()=>{
-  // A queued close event from an earlier review must not discard a newly opened one.
-  if($('write-dialog').open)return;
-  discardPending();$('acknowledge').checked=false;$('confirm-write').disabled=true;
-});
-$('retry').addEventListener('click',()=>{if(retryWrite && !busy)try {reviewWrite({...retryWrite},true);}catch(error) {status(errorMessage(error),'error');}});
-$('operation').addEventListener('change',()=>{if(busy)return;cancelPoll();renderFields();});
-for(const button of document.querySelectorAll('[data-group]'))button.addEventListener('click',()=>{
-  if(busy)return;activeGroup=button.dataset.group;
-  for(const item of document.querySelectorAll('[data-group]'))item.setAttribute('aria-pressed',String(item===button));
-  $('workflow-title').textContent=button.textContent;renderOperations();
-});
-function updateAccount() {
-  const account=$('account').value.trim();if(account===selectedAccount)return;selectedAccount=account;
-  resetChallenge();retryWrite=null;discardPending();if($('write-dialog').open)$('write-dialog').close();
-  $('account').removeAttribute('aria-invalid');$('account-error').hidden=true;
-  // Preserve ordinary arguments: rebuilding on blur used to discard newly typed fields.
-  for(const input of $('fields').querySelectorAll('input[type=password]'))input.value='';
-  for(const name of ['login_handle','review_handle'])if($('arg-'+name))$('arg-'+name).value='';
-  $('active-account').textContent=account ? '当前账户 · '+account : '尚未选择账户';
-  for(const item of $('accounts').querySelectorAll('button'))item.setAttribute('aria-pressed',String(item.textContent===account));
-  $('output').textContent=account ? '当前账户：'+account+'。请查看账户状态或执行操作。' : '请先选择已有账户，或输入新标识并创建账户。';
-  status(account ? '已选择账户：'+account+'。请查看账户状态后操作。' : '请先选择账户。');setBusy(busy);
-}
-$('account').addEventListener('input',updateAccount);$('account').addEventListener('change',updateAccount);
-function renderAccounts(accounts) {
-  $('accounts').replaceChildren();
-  for(const slug of accounts) {
-    if(typeof slug!=='string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug))continue;
-    const button=document.createElement('button');button.type='button';button.textContent=slug;button.disabled=busy;button.setAttribute('aria-pressed',String(slug===$('account').value.trim()));
-    button.addEventListener('click',()=>{if(busy)return;$('account').value=slug;updateAccount();});$('accounts').append(button);
-  }
-  if(!$('accounts').children.length) {const note=document.createElement('p');note.className='muted';note.textContent='尚无账户。请输入标识并点击“创建账户”。';$('accounts').append(note);}
-  else if(!$('account').value.trim()) {$('account').value=$('accounts').querySelector('button').textContent;updateAccount();}
-}
-function clearConnection() {
-  generation++;for(const controller of activeRequests)controller.abort();resetChallenge();discardPending();
-  if($('write-dialog').open)$('write-dialog').close();
-  token='';registry=[];retryWrite=null;$('token').value='';$('accounts').replaceChildren();
-  $('account').value='';selectedAccount='';$('account').removeAttribute('aria-invalid');$('account-error').hidden=true;
-  $('active-account').textContent='尚未选择账户';$('connection-state').textContent='未连接';
-  $('output').textContent='已断开连接，响应已清空。';
-  for(const id of ['review-arguments','review-account','review-operation','review-item','review-amount','review-recipient'])$(id).textContent='';
-  renderOperations();setBusy(false);
-}
-$('connection-form').addEventListener('submit',async event=>{
-  event.preventDefault();if(busy)return;const supplied=$('token').value.trim();clearConnection();
-  if(!supplied){status('请输入 API 访问令牌。','error');return;}
-  token=supplied;setBusy(true);status('正在加载支持的操作…');const current=generation;
-  try {
-    const data=await request({method:'GET',path:'/v1/operations'});if(current!==generation)return;
-    registry=Array.isArray(data.operations) ? data.operations.filter(x=>x && typeof x.name==='string' && /^[a-zA-Z0-9_.-]{1,150}$/.test(x.name) && typeof x.mutating==='boolean' && x.schema && x.schema.properties && Array.isArray(x.schema.required)) : [];
-    renderOperations();$('connection-state').textContent='已连接 · 令牌仅保存在内存中';
-    try {
-      const list=await request({method:'GET',path:'/v1/accounts'});if(current!==generation)return;renderAccounts(Array.isArray(list.accounts) ? list.accounts : []);
-      status('已连接，已加载 '+registry.length+' 个操作。'+($('account').value ? '当前账户：'+$('account').value+'。' : '请创建或选择账户。'),'success');
-    } catch(error) {
-      if(current!==generation)return;
-      if(error.code==='scope_denied' || error.code==='account_denied')status('已连接；账户列表访问被拒绝。请手动输入已存在的账户标识。');
-      else if(error.code==='unauthorized') {clearConnection();status(errorMessage(error),'error');}
-      else status('操作目录已加载，但账户列表读取失败。'+errorMessage(error)+' 可手动输入账户标识。','error');
-    }
-  } catch(error) {if(current===generation){clearConnection();status(errorMessage(error),'error');}}
-  finally {if(current===generation)setBusy(false);}
-});
-$('disconnect').addEventListener('click',()=>{clearConnection();status('令牌和登录验证已从页面内存中清除。');});
+$('confirm-write').addEventListener('click',()=>{if (!pendingWrite || !$('acknowledge').checked || busy) return; const intent=pendingWrite; pendingWrite=null; $('write-dialog').close(); if(intent.polling) void startPolling(); else void dispatch(intent);});
+$('cancel-write').addEventListener('click',()=>{$('write-dialog').close();discardPending();});
+$('write-dialog').addEventListener('cancel',()=>discardPending());
+$('write-dialog').addEventListener('close',()=>{discardPending();$('acknowledge').checked=false;$('confirm-write').disabled=true;});
+$('retry').addEventListener('click',()=>{if(retryWrite && !busy) reviewWrite({...retryWrite},true);});
+$('operation').addEventListener('change',()=>{cancelPoll();renderFields();});
+for (const button of document.querySelectorAll('[data-group]')) button.addEventListener('click',()=>{activeGroup=button.dataset.group;for(const item of document.querySelectorAll('[data-group]')) item.setAttribute('aria-pressed',String(item===button));$('workflow-title').textContent=button.textContent;renderOperations();});
+$('account').addEventListener('change',()=>{resetChallenge();retryWrite=null;setBusy(busy);$('output').textContent='账户已切换。请执行操作以查看此账户。';renderFields();});
+function renderAccounts(accounts) { $('accounts').replaceChildren(); for(const slug of accounts) {if(typeof slug !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) continue;const button=document.createElement('button');button.type='button';button.textContent=slug;button.setAttribute('aria-pressed',String(slug===$('account').value));button.addEventListener('click',()=>{if(busy)return;$('account').value=slug;$('account').dispatchEvent(new Event('change'));for(const item of $('accounts').children)item.setAttribute('aria-pressed',String(item===button));});$('accounts').append(button);} if(!$('accounts').children.length){const note=document.createElement('p');note.className='muted';note.textContent='未返回任何账户。请在下方输入账户标识。';$('accounts').append(note);} }
+$('connection-form').addEventListener('submit',async event=>{event.preventDefault();if(busy)return;resetChallenge();generation++;token=$('token').value.trim();$('token').value='';retryWrite=null;registry=[];renderOperations();if(!token){status('请输入 API 访问令牌。','error');return;}setBusy(true);status('正在加载支持的操作…');const current=generation;try{const data=await request({method:'GET',path:'/v1/operations'});if(current!==generation)return;registry=Array.isArray(data.operations)?data.operations.filter(x=>x&&typeof x.name==='string'&&/^[a-zA-Z0-9_.-]{1,150}$/.test(x.name)&&typeof x.mutating==='boolean'&&x.schema&&x.schema.properties&&Array.isArray(x.schema.required)):[];renderOperations();$('connection-state').textContent='已连接 · 令牌仅保存在内存中';status('操作目录已加载。请选择账户和操作。','success');try{const list=await request({method:'GET',path:'/v1/accounts'});if(current===generation)renderAccounts(Array.isArray(list.accounts)?list.accounts:[]);}catch{if(current===generation)status('操作目录已加载。查看账户列表需要管理员权限；请手动输入账户标识。');}}catch(error){if(current===generation){token='';$('connection-state').textContent='未连接';status(errorMessage(error),'error');}}finally{if(current===generation)setBusy(false);}});
+$('disconnect').addEventListener('click',()=>{generation++;resetChallenge();discardPending();if($('write-dialog').open)$('write-dialog').close();token='';registry=[];retryWrite=null;$('token').value='';$('output').textContent='已断开连接，响应已清空。';$('accounts').replaceChildren();$('connection-state').textContent='未连接';renderOperations();setBusy(false);status('令牌和登录验证已从页面内存中清除。');});
 $('clear-result').addEventListener('click',()=>{$('output').textContent='响应已清空。';});
-$('create-account').addEventListener('click',()=>{if(busy || !token)return;try {const account=$('account').value.trim();reviewWrite({name:'account.create',account,method:'PUT',path:accountPath(account),body:{},mutating:true,key:crypto.randomUUID()});}catch(error) {status(errorMessage(error),'error');}});
-$('account-info').addEventListener('click',()=>{if(busy || !token)return;cancelPoll();try {const account=$('account').value.trim();void dispatch({name:'account.info',account,method:'GET',path:accountPath(account),mutating:false});}catch(error) {status(errorMessage(error),'error');}});
+$('create-account').addEventListener('click',()=>{if(busy)return;try{reviewWrite({name:'account.create',account:$('account').value.trim(),method:'PUT',path:accountPath(),body:{},mutating:true,key:crypto.randomUUID()});}catch(error){status(errorMessage(error),'error');}});
+$('account-info').addEventListener('click',()=>{if(busy)return;cancelPoll();try{void dispatch({name:'account.info',method:'GET',path:accountPath(),mutating:false});}catch(error){status(errorMessage(error),'error');}});
 function pollDelay(ms,signal) {return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(new DOMException('已取消','AbortError'));};const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();});}
-async function startPolling(intent) {
-  if(busy || !token || !loginHandle)return;
-  const op=registry.find(x=>x.name==='session.poll');
-  if(!op || !op.schema.properties.login_handle || op.schema.required.some(k=>k!=='login_handle')) {status('此轮询操作需要额外参数。请手动执行操作。');return;}
-  if(intent.account!==$('account').value.trim() || intent.body.arguments.login_handle!==loginHandle) {status('登录验证上下文已变更。请重新审核轮询。','error');return;}
-  const account=intent.account, handle=loginHandle, interval=intent.pollInterval;
-  intent.body=undefined;cancelPoll();const controller=new AbortController();pollController=controller;setBusy(true);
-  const current=generation;let complete=false;
-  try {
-    for(let attempt=0;attempt<20;attempt++) {
-      if(controller.signal.aborted || current!==generation)break;
-      if(challengeExpiresAt && Date.now()/1000>=challengeExpiresAt) {resetChallenge();status('登录验证已过期。请重新发起登录。','error');break;}
-      status('正在检查登录 · 第 '+(attempt+1)+' 次，共最多 20 次…');
-      const pollIntent={name:op.name,account,method:'POST',path:accountPath(account)+'/operations/'+encodeURIComponent(op.name),body:{arguments:{login_handle:handle}},mutating:op.mutating,key:op.mutating ? crypto.randomUUID() : undefined};
-      const data=await request(pollIntent,controller.signal);
-      if(controller.signal.aborted || current!==generation)break;
-      complete=authResult(data,op.name);if(complete || !loginHandle)break;
-      if(attempt===19)break;
-      const result=data.result || {}, suggested=Number(result.poll_interval_seconds || result.poll_interval || interval), next=Number(result.next_poll_at);
-      const wait=Number.isFinite(next) && next>0 ? next*1000-Date.now() : suggested*1000;
-      await pollDelay(Math.min(30000,Math.max(interval*1000,Number.isFinite(wait) ? wait : interval*1000)),controller.signal);
-    }
-    if(!complete && loginHandle && !controller.signal.aborted && current===generation)status('登录轮询已达上限。仍待验证时可重新审核轮询。');
-  } catch(error) {
-    if(!controller.signal.aborted && current===generation) {
-      if(['login_required','login_handle_mismatch','login_not_found','login_expired','login_attempt_limit'].includes(error.code))resetChallenge();
-      status(errorMessage(error)+' 轮询已停止，未重试任何请求。','error');
-    }
-  } finally {if(pollController===controller){pollController=null;setBusy(false);}}
-}
-$('poll-login').addEventListener('click',()=>{
-  if(busy || !loginHandle || !token)return;const op=registry.find(x=>x.name==='session.poll');if(!op)return;
-  try {
-    const intent=manualIntent(op,{login_handle:loginHandle});intent.polling=true;intent.pollInterval=Math.min(30,Math.max(3,Number($('poll-interval').value) || 5));$('poll-interval').value=String(intent.pollInterval);
-    if(op.mutating) {reviewWrite(intent);$('review-warning').textContent='审核当前账户的最多 20 次登录状态检查（session.poll），间隔至少 '+intent.pollInterval+' 秒。每次检查更新加密会话状态并使用新幂等键；失败不重试。可随时停止，不包含资金操作。';}
-    else void startPolling(intent);
-  } catch(error) {status(errorMessage(error),'error');}
-});
+async function startPolling(){if(busy || !loginHandle)return;cancelPoll();const op=registry.find(x=>x.name==='session.poll');if(!op){status('此操作目录不支持登录轮询。');return;}if(!op.schema.properties.login_handle || op.schema.required.some(k=>k!=='login_handle')){status('此轮询操作需要额外参数。请手动执行操作。');return;}const interval=Math.min(30,Math.max(3,Number($('poll-interval').value)||5));$('poll-interval').value=String(interval);const controller=new AbortController();pollController=controller;$('stop-poll').disabled=false;$('poll-login').disabled=true;const current=generation;try{for(let attempt=0;attempt<20;attempt++){if(controller.signal.aborted || current!==generation)break;status('正在检查登录 · 第 '+(attempt+1)+' 次，共最多 20 次…');const data=await request(manualIntent(op,{login_handle:loginHandle}),controller.signal);if(controller.signal.aborted || current!==generation)break;if(authResult(data,op.name))break;const result=data.result||{};const suggested=Number(result.poll_interval_seconds||result.poll_interval||interval);const next=Number(result.next_poll_at);const wait=Number.isFinite(next)&&next>0 ? next*1000-Date.now() : suggested*1000;await pollDelay(Math.min(30000,Math.max(interval*1000,Number.isFinite(wait)?wait:interval*1000)),controller.signal);}if(!controller.signal.aborted && current===generation)status('登录轮询已结束。如验证仍未完成，请手动重新开始。');}catch(error){if(!controller.signal.aborted && current===generation)status(errorMessage(error)+' 轮询已停止，未重试任何请求。','error');}finally{if(pollController===controller)cancelPoll();$('poll-login').disabled=!loginHandle;}}
+$('poll-login').addEventListener('click',()=>{if(busy||!loginHandle)return;const op=registry.find(x=>x.name==='session.poll');if(!op)return;if(op.mutating){try{const intent=manualIntent(op,{login_handle:loginHandle});intent.polling=true;reviewWrite(intent);$('review-warning').textContent='授权对当前登录验证执行最多 20 次登录状态检查（session.poll）。每次检查都会更改加密登录会话状态，并使用新的幂等键；失败的检查绝不重试。您可随时停止。不包含任何资金操作。';}catch(error){status(errorMessage(error),'error');}}else void startPolling();});
 $('stop-poll').addEventListener('click',()=>{cancelPoll();status('登录轮询已停止。');});
-window.addEventListener('pagehide',clearConnection);
+// QR screenshot decode: runs entirely in-browser (BarcodeDetector + canvas).
+// On success switches to session.qr_inspect and fills the qr_url field; the
+// image itself never leaves the device.
+(async()=>{
+  const input=$('qr-image'),note=$('qr-upload-status');
+  if(!input)return;
+  if(!('BarcodeDetector' in self)){note.textContent='此浏览器不支持二维码识别（需要 Chrome/Edge/Android）。请在官方客户端二维码下方使用“复制链接”，手动粘贴到“官方客户端二维码链接”字段。';input.disabled=true;return;}
+  let detector;try{detector=new BarcodeDetector({formats:['qr_code']});}catch{note.textContent='二维码识别初始化失败，请手动粘贴链接。';input.disabled=true;return;}
+  input.addEventListener('change',async()=>{const file=input.files&&input.files[0];input.value='';if(!file)return;note.textContent='正在识别…';try{
+    const bitmap=await createImageBitmap(file);
+    const codes=await detector.detect(bitmap);bitmap.close();
+    const url=(codes.find(c=>c.rawValue&&/^https:\/\/s\.team\/q\/\d+\/\d+$/.test(c.rawValue))||{}).rawValue;
+    if(!url){note.textContent='未在截图中找到 Steam 登录二维码链接（https://s.team/q/…）。请确认截图完整清晰后重试，或手动粘贴链接。';return;}
+    const op=registry.find(x=>x.name==='session.qr_inspect');
+    if(!op){note.textContent='已识别链接：'+url+'（当前目录没有“查看官方客户端扫码请求”操作，请手动使用。）';return;}
+    const group=document.querySelector('[data-group=login]');if(group)group.click();
+    $('operation').value='session.qr_inspect';$('operation').dispatchEvent(new Event('change'));
+    const field=$('arg-qr_url');if(field){field.value=url;}
+    note.textContent='已识别并填入链接。请核对设备信息后决定是否批准。';
+  }catch(error){note.textContent='识别失败：'+(error&&error.message||error)+'。请重试或手动粘贴链接。';}});
+})();
+window.addEventListener('pagehide',()=>{generation++;cancelPoll();token='';loginHandle='';discardPending();retryWrite=null;});
 renderOperations();setBusy(false);
 </script></body></html>
