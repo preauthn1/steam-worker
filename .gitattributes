@@ -1,0 +1,2 @@
+# License bytes in embedded HTML are CSP-hashed; preserve exact frontend asset.
+internal/server/assets/console.html -whitespace

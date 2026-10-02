@@ -1,6 +1,6 @@
 # Steam Worker — TypeScript rewrite contract
 
-Project root: `/root/work/steam-worker-ts`. Pure TypeScript Cloudflare Worker. **No Python, no Pyodide, no aiohttp.**
+Project root: the repository directory. Pure TypeScript Cloudflare Worker. **No Python, no Pyodide, no aiohttp.**
 Reason for rewrite: Python Workers exceeded the Free plan's hard 10 ms CPU limit (`CpuLimitExceeded`, ~25% of
 requests). The TS build must stay small and cheap per request. Budget target: **p95 CPU < 5 ms for public reads**.
 

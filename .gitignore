@@ -1,9 +1,9 @@
-node_modules/
-.wrangler/
-.dev.vars
-.dev.vars.*
+/steam-server
+bin/
 .env
 .env.*
-dist/
+*.db
+*.db.lock
 *.log
-.DS_Store
+PORTING.md
+coverage.out

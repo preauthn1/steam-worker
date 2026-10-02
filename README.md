@@ -1,75 +1,35 @@
-# Steam Worker
+# Steam 本地 Go 服务
 
-A dependency-free TypeScript Cloudflare Worker adapter for a small, security-focused subset of Steam HTTP functionality.
+纯 Go 后端，中文控制台，保留 Steam 协议操作、加密账户状态、权限检查、幂等写保护。
 
-It is designed for the Workers Free CPU limit:
+部署拓扑：浏览器 → Cloudflare Tunnel → 回环地址上的 Go 服务 → Steam。Tunnel 仅承担入口，Steam 请求从本机出网。
 
-- no Python/Pyodide runtime;
-- no reflected protobuf schema or `protobufjs`;
-- Workers `fetch` and Web Crypto only;
-- encrypted account state in SQLite-backed Durable Objects;
-- scoped bearer-token authorization and idempotency protection for writes.
+## 功能与限制
 
-> **Status:** early, intentionally limited. This is **not** a drop-in replacement for `aiosteampy` and must not be described as one. See [coverage](docs/coverage.md).
+接口操作目录是能力清单，不承诺完整 aiosteampy SDK 兼容。支持密码/QR 登录、手机平台会话、库存、钱包、市场/交易/确认及检查后批准官方客户端扫码。
 
-## Implemented operations
+扫码批准需要您自己账户的手机平台会话和 `shared_secret`；账号密码不能直接推导共享密钥。不会自动添加、迁移或移除手机验证器。
 
-- Public server time and market price overview
-- Password and locally rendered QR login, Guard-code submission, bounded polling, refresh and web-cookie acquisition
-- Logged-in inventory and trusted wallet currency inspection
-- Market listings, sell/cancel, buy-order/cancel and explicit-fee listing purchase
-- Trade-offer reads, send/accept/decline/cancel
-- Mobile confirmations, with server-derived type checks and admin-only bulk actions
+真实账号登录、资金操作及扫码批准需独立验收。开发阶段仅合成协议测试和公开只读请求，不把它们冒充真实资金操作成功。
 
-The Worker also exposes account create/delete/import/export primitives and a responsive Steam-inspired browser workbench. All operation schemas are available through `GET /v1/operations`. See [coverage and verification limitations](docs/coverage.md): implementation and synthetic protocol tests are not a claim of real-account financial end-to-end verification.
+## 安全
 
-## 前端语言
+- 仅监听 127.0.0.1，配合独立 Tunnel。
+- API Token 用 SHA256 哈希配置，Steam/Guard 状态 AES256-GCM 加密。
+- 密码不持久化；日志不含请求体、Token、Cookie 或原始敏感异常。
+- 写操作需 `X-Confirm-Write: true` 与 `Idempotency-Key`，不确定结果不自动重试。
+- 账户状态和意图日志使用持久化事务，重启后保留重放保护。
+- API、中文字段和前端写入审核保持原格式。
 
-控制台使用简体中文；接口操作名、字段键、Steam 返回的原始业务数据和第三方许可证保持原文。中文标签与接口标识并列显示，不改变请求格式。
-
-## Security model
-
-- Configure `API_KEYS_JSON` as a Worker secret containing only SHA-256 bearer-token hashes, scopes, and permitted account slugs.
-- Configure `STATE_KEY_HEX` as a Worker secret with exactly 32 random bytes encoded as 64 hexadecimal characters.
-- Account state is AES-256-GCM encrypted. The envelope is compatible with the earlier Python implementation: base64 of `nonce(12) || ciphertext || tag(16)`, with AAD `steam-worker:v1:<account-slug>`.
-- Mutating routes require both `X-Confirm-Write: true` and an `Idempotency-Key`.
-- The Worker never logs passwords, tokens, cookies, Steam Guard secrets, or raw upstream exceptions.
-- Outbound requests are restricted to the Steam hosts required by implemented operations. Responses are capped at 8 MB, requests at 40 per operation, and redirects are manually restricted.
-
-## Deploy
+## 构建与测试
 
 ```sh
-npm install
-npx wrangler secret put API_KEYS_JSON
-npx wrangler secret put STATE_KEY_HEX
-npx wrangler deploy
+GOMAXPROCS=2 go build -p=1 ./cmd/steam-server
+GOMAXPROCS=2 go test -p=1 ./internal/steam ./internal/server
 ```
 
-Example (use generated values; do not put plaintext bearer tokens in the JSON):
+配置与状态不应提交版本库；生产使用专门服务用户、私有配置文件及受限状态目录。Cloudflare Token、Tunnel Token和真实域名均只放私有运维配置。
 
-```json
-[
-  {
-    "id": "operator",
-    "sha256": "64-lowercase-hex-characters-for-the-token-hash",
-    "scopes": ["admin"],
-    "accounts": ["*"]
-  }
-]
-```
+## 许可证
 
-The deployment uses SQLite-backed Durable Objects, supported on Workers Free. Use your own custom domain and keep operational hostnames, tokens, and account identifiers out of source control.
-
-## Verification
-
-```sh
-npx tsc --noEmit
-node --import tsx --test --test-concurrency=1 test/*.test.ts
-npx wrangler deploy --dry-run
-```
-
-Tests are deterministic and use fake Steam transports; they never contact Steam or require credentials.
-
-## License and attribution
-
-MIT. Steam protocol behavior was independently implemented using publicly documented behavior and informed by the MIT-licensed projects listed in [docs/prior-art.md]. See [NOTICE](NOTICE).
+MIT。协议参考 aiosteampy、node-steam-session；浏览器包含 MIT Project Nayuki QR 编码器，原许可证保留。
