@@ -2,6 +2,8 @@ import { OpError, type Json, type OpContext, type OperationDescription, type Ope
 import { createTransport as makeTransport, SteamTransport } from './transport.ts';
 import { Writer, decode, get } from './protobuf.ts';
 import { callService } from './webapi.ts';
+import { SESSION_OPS } from './session.ts';
+import { AUTHENTICATED_OPS } from './authenticated.ts';
 
 const text = new TextDecoder();
 const schema = (properties: Record<string, Record<string, Json>>, required: string[] = []) => ({ type: 'object' as const, additionalProperties: false as const, properties, required });
@@ -37,21 +39,12 @@ async function priceOverview(ctx: OpContext, args: Record<string, Json>): Promis
 const OPS: OperationSpec[] = [
   { name: 'public.server_time', scope: 'read', mutating: false, description: 'Steam server time for Guard code alignment.', schema: schema({ sender_time: { type: 'integer' } }), run: serverTime },
   { name: 'public.market.get_price_overview', scope: 'read', mutating: false, description: 'Public market price overview. Monetary strings are preserved without lossy parsing.', schema: schema({ obj: { type: 'string', maxLength: 500 }, app: { type: 'integer', minimum: 1 }, currency: { type: 'integer', minimum: 1 }, if_modified_since: { type: 'string' } }, ['obj']), run: priceOverview },
+  ...SESSION_OPS,
+  ...AUTHENTICATED_OPS,
 ];
 export const OPERATIONS: ReadonlyMap<string, OperationSpec> = new Map(OPS.map(x => [x.name, x]));
 const DESCRIPTIONS: readonly OperationDescription[] = Object.freeze(OPS.map(({ name, scope, mutating, description, schema: specSchema }) => Object.freeze({ name, scope, mutating, description, schema: specSchema })));
 export function describeOperations(): readonly OperationDescription[] { return DESCRIPTIONS; }
 export const OPERATIONS_JSON = JSON.stringify({ operations: DESCRIPTIONS });
-export function validateArgs(spec: OperationSpec, args: unknown): Record<string, Json> {
-  if (!args || typeof args !== 'object' || Array.isArray(args)) throw new OpError(400, 'invalid_arguments');
-  const record = args as Record<string, unknown>, ps = spec.schema.properties;
-  for (const k of Object.keys(record)) if (!(k in ps)) throw new OpError(400, 'invalid_arguments');
-  for (const k of spec.schema.required) if (!(k in record)) throw new OpError(400, 'invalid_arguments');
-  for (const [k, v] of Object.entries(record)) {
-    const p = ps[k]!, typ = p.type;
-    const ok = (typ === 'string' && typeof v === 'string') || (typ === 'integer' && typeof v === 'number' && Number.isSafeInteger(v)) || (typ === 'boolean' && typeof v === 'boolean');
-    if (!ok || (typeof p.maxLength === 'number' && typeof v === 'string' && v.length > p.maxLength) || (typeof p.minimum === 'number' && typeof v === 'number' && v < p.minimum)) throw new OpError(400, 'invalid_arguments');
-  }
-  return record as Record<string, Json>;
-}
+export { validateArgs } from './schema.ts';
 export function createTransport(): SteamTransport { return makeTransport(); }

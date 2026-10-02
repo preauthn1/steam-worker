@@ -14,10 +14,14 @@ It is designed for the Workers Free CPU limit:
 
 ## Implemented operations
 
-- `public.server_time` — Steam server time, as a decimal string
-- `public.market.get_price_overview` — public price overview
+- Public server time and market price overview
+- Password and locally rendered QR login, Guard-code submission, bounded polling, refresh and web-cookie acquisition
+- Logged-in inventory and trusted wallet currency inspection
+- Market listings, sell/cancel, buy-order/cancel and explicit-fee listing purchase
+- Trade-offer reads, send/accept/decline/cancel
+- Mobile confirmations, with server-derived type checks and admin-only bulk actions
 
-The Worker also exposes account create/delete/import/export primitives, an encrypted Durable Object store, and a small browser console. It does not yet implement credential login, inventory, trading, market writes, or Steam Guard confirmations.
+The Worker also exposes account create/delete/import/export primitives and a responsive Steam-inspired browser workbench. All operation schemas are available through `GET /v1/operations`. See [coverage and verification limitations](docs/coverage.md): implementation and synthetic protocol tests are not a claim of real-account financial end-to-end verification.
 
 ## Security model
 
@@ -56,7 +60,7 @@ The deployment uses SQLite-backed Durable Objects, supported on Workers Free. Us
 
 ```sh
 npx tsc --noEmit
-npx tsx --test test/core.test.ts test/steam.test.ts
+node --import tsx --test --test-concurrency=1 test/*.test.ts
 npx wrangler deploy --dry-run
 ```
 
