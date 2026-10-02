@@ -335,7 +335,7 @@ func CallService(ctx context.Context, t *Transport, iface, method string, reques
 		if n == 84 {
 			return nil, fail(429, "upstream_rate_limited")
 		}
-		if n == 5 || n == 15 || n == 21 {
+		if n == 5 || n == 15 || n == 21 || n == 27 {
 			status = 403
 		}
 		return nil, fail(status, "upstream_eresult_"+strconv.Itoa(n))
