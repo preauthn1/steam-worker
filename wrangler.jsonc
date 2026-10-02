@@ -1,0 +1,15 @@
+{
+  "name": "steam-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [
+      { "name": "ACCOUNTS", "class_name": "SteamAccount" },
+      { "name": "DIRECTORY", "class_name": "AccountDirectory" }
+    ]
+  },
+  // Same Durable Object classes and storage keys as the earlier Python build, so existing
+  // encrypted state keeps working. Secrets: API_KEYS_JSON, STATE_KEY_HEX (wrangler secret put).
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SteamAccount", "AccountDirectory"] }]
+}

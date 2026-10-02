@@ -1,0 +1,14 @@
+# Notices
+
+This project independently implements a limited subset of Steam HTTP protocol behavior.
+
+The following MIT-licensed projects informed interoperability research:
+
+- `somespecialone/aiosteampy`
+- `DoctorMcKay/node-steam-session`
+- `DoctorMcKay/node-steam-totp`
+- `DoctorMcKay/node-steamcommunity`
+
+No runtime dependency from these projects is bundled by this Worker. Attribution details and portability findings are in `docs/prior-art.md`.
+
+Steam is a trademark of Valve Corporation. This project is not affiliated with or endorsed by Valve.
