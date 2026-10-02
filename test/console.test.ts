@@ -31,14 +31,14 @@ test('no browser persistence, remote assets, or upstream HTML sinks',()=>{
   assert.match(script,/querySelectorAll\('input\[type=password\]'\)/);
 });
 test('responsive and keyboard/a11y anchors are present',()=>{
-  assert.match(HTML,/name="viewport"/);assert.match(style,/@media\(max-width:700px\)/);assert.match(style,/prefers-reduced-motion/);
+  assert.match(HTML,/lang="zh-CN"/);assert.match(HTML,/<title>Steam Worker · 账户控制台<\/title>/);assert.match(HTML,/name="viewport"/);assert.match(style,/@media\(max-width:700px\)/);assert.match(style,/prefers-reduced-motion/);
   for(const id of ['workspace','status','write-dialog','review-title','acknowledge','challenge-qr','stop-poll']) assert.ok(HTML.includes(`id="${id}"`));
   assert.match(HTML,/class="skip"/);assert.match(HTML,/aria-live="polite"/);assert.match(HTML,/aria-labelledby="review-title"/);assert.match(style,/:focus-visible/);
 });
 test('second review freezes summary, requires acknowledgement, and cancellation sends nothing',async()=>{
   const h=harness();h.run(`token='memory';reviewWrite({name:'trade.send',account:'fixture',method:'POST',path:'/v1/accounts/fixture/operations/trade.send',body:{arguments:{assets:[{id:'sample',amount:1}],recipient:'<img onerror=bad>',subtotal:100,fee:15,to_receive:85,currency:1}},mutating:true,key:'original'});`);
   assert.equal(h.element('write-dialog').open,true);assert.equal(h.element('confirm-write').disabled,true);
-  assert.match(h.element('review-amount').textContent,/subtotal: 100/);assert.match(h.element('review-amount').textContent,/fee: 15/);assert.match(h.element('review-amount').textContent,/to_receive: 85/);
+  assert.match(h.element('review-amount').textContent,/小计 · subtotal：100/);assert.match(h.element('review-amount').textContent,/手续费 · fee：15/);assert.match(h.element('review-amount').textContent,/实际收入 · to_receive：85/);
   assert.match(h.element('review-item').textContent,/sample/);assert.match(h.element('review-recipient').textContent,/<img onerror=bad>/);
   h.element('confirm-write').listeners.get('click')();assert.equal(h.calls.length,0);
   h.element('cancel-write').listeners.get('click')();assert.equal(h.calls.length,0);assert.equal(h.run('pendingWrite'),null);
@@ -58,12 +58,12 @@ test('trade array arguments parse newline JSON and password clears before dispat
   const assets={dataset:{argument:'assets',type:'array'},value:'[\n {"assetid":"fixture-item","amount":1}\n]'},password={dataset:{argument:'password',type:'string'},value:'fixture-secret'};
   h.element('fields').querySelectorAll=(selector:string)=>selector.includes('password')?[password]:[assets,password];
   const args=h.run('readArguments()');assert.equal(args.assets[0].amount,1);assert.equal(password.value,'');
-  assets.value='not json';assert.throws(()=>h.run('readArguments()'),/valid JSON/);
+  assets.value='not json';assert.throws(()=>h.run('readArguments()'),/有效的 JSON/);
   assert.match(script,/document\.createElement\('textarea'\)/);
 });
 test('secrets scrub recursively and challenge links reject unsafe destinations',()=>{
   const h=harness();const clean=h.run(`scrub({access_token:'fixture-secret',nested:{password:'secret',item:'<svg/onload=bad>'}})`);
-  assert.equal(clean.access_token,'[hidden]');assert.equal(clean.nested.password,'[hidden]');assert.equal(clean.nested.item,'<svg/onload=bad>');
+  assert.equal(clean.access_token,'[已隐藏]');assert.equal(clean.nested.password,'[已隐藏]');assert.equal(clean.nested.item,'<svg/onload=bad>');
   for(const value of ['javascript:alert(1)','https://invalid.example/q/x','https://s.team.evil.example/q/x','https://user:pass@s.team/q/x']) assert.equal(h.run(`safeChallengeURL(${JSON.stringify(value)})`),null);
   assert.equal(h.run(`safeChallengeURL('https://s.team/q/fixture')`),'https://s.team/q/fixture');
 });
@@ -77,5 +77,20 @@ test('polling is bounded, cancellable and explicitly authorized for session writ
   assert.match(script,/attempt<20/);assert.match(script,/controller\.signal/);assert.match(script,/Math\.min\(30,Math\.max\(3/);
   assert.match(script,/intent\.polling=true;reviewWrite\(intent\)/);assert.match(script,/if\(intent\.polling\) void startPolling\(\)/);
   assert.match(script,/result\.next_poll_at/);assert.match(script,/manualIntent\(op,\{login_handle:loginHandle\}\)/);
-  assert.match(script,/failed checks are never retried/);
+  assert.match(script,/失败的检查绝不重试/);
+});
+
+test('Chinese operation and schema labels preserve API identifiers',()=>{
+  const h=harness();
+  assert.equal(h.run("operationLabel('trade.send')"),'发送交易报价 · trade.send');
+  assert.equal(h.run("fieldLabel('to_partner')"),'给予对方的物品 · to_partner');
+  assert.equal(h.run("enumLabel('web')"),'网页 · web');
+  assert.equal(h.run("operationLabel('custom.operation')"),'服务器操作 · custom.operation');
+  assert.equal(h.run("fieldLabel('custom_field')"),'自定义参数 · custom_field');
+  h.run("registry=[{name:'session.code',scope:'admin',mutating:true,schema:{properties:{auth_code:{type:'string'}},required:['auth_code']}}];");
+  h.element('operation').value='session.code';h.run('renderFields()');
+  assert.equal(h.element('fields').children[0].children[0].textContent,'登录验证码 · auth_code（必填）');
+  assert.equal(h.element('fields').children[0].children[1].name,'auth_code');
+  assert.equal(h.element('run').textContent,'审核写入');
+  assert.equal(h.element('operation-policy').textContent,'写入 · 需审核 · 管理员权限（admin）');
 });

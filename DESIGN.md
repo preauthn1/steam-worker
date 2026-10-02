@@ -24,6 +24,8 @@ System UI sans-serif; monospace only for JSON/data. Base 15px, masthead 20px, wo
 The persistent shell houses connection and account context. At desktop widths a 248px account rail accompanies operation editor and response inspector. At 1050px the inspector stacks; at 700px the rail stacks above the canvas, connection controls wrap, and workflow navigation becomes a fully visible two-row, three-column grid. No action disappears on phone. At 1600px content spacing expands instead of inventing more panels.
 
 ## Interaction language
+
+All user-facing navigation, labels, descriptions, statuses, errors and write-review copy use Simplified Chinese (`zh-CN`). API identifiers and upstream JSON remain unchanged; localized human-readable labels accompany technical field names. Third-party QR algorithm/license text is not translated.
 One bright-blue primary action per task. Native form validity, schema-derived fields, multiline JSON textarea for array/object arguments, optional omission and server capability truth. All response text uses textContent; authentication output is restricted and secret-shaped fields are recursively hidden. Mutations freeze their target and arguments before a native dialog with amount/subtotal/fees/receive/currency, items and recipient; a reset acknowledgement gates dispatch. Cancel and Escape do not send a request. Exact-key retry is explicit and excludes sensitive bodies.
 
 Login challenge QR is black on white, rendered locally to canvas using the bundled MIT Project Nayuki encoder; the quiet zone is four modules. Polling is capped at 20 requests, cancellable, paced by bounded server intervals and only session polling may be explicitly authorized as a write batch. Each poll uses a fresh idempotency key; errors stop the batch.

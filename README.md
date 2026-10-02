@@ -23,6 +23,10 @@ It is designed for the Workers Free CPU limit:
 
 The Worker also exposes account create/delete/import/export primitives and a responsive Steam-inspired browser workbench. All operation schemas are available through `GET /v1/operations`. See [coverage and verification limitations](docs/coverage.md): implementation and synthetic protocol tests are not a claim of real-account financial end-to-end verification.
 
+## 前端语言
+
+控制台使用简体中文；接口操作名、字段键、Steam 返回的原始业务数据和第三方许可证保持原文。中文标签与接口标识并列显示，不改变请求格式。
+
 ## Security model
 
 - Configure `API_KEYS_JSON` as a Worker secret containing only SHA-256 bearer-token hashes, scopes, and permitted account slugs.

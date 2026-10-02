@@ -9,20 +9,174 @@ const script = qrLibrary + String.raw`
 const $ = id => document.getElementById(id);
 let token = '', registry = [], activeGroup = 'login', pendingWrite = null, retryWrite = null, loginHandle = '', pollController = null, busy = false, generation = 0;
 const secretKey = /password|passwd|secret|token|cookie|authorization|session_id|revocation|envelope|private_key|login_handle|challenge_url|qr_url|qr_challenge|code/i;
+const operationLabels = {
+  "account.create": "创建账户",
+  "account.info": "查看账户",
+  "public.server_time": "查询服务器时间",
+  "public.market.get_price_overview": "查看公开市场价格",
+  "session.credentials": "使用密码登录",
+  "session.qr": "使用二维码登录",
+  "session.code": "提交登录验证码",
+  "session.poll": "检查登录状态",
+  "session.cookies": "更新会话 Cookie",
+  "session.refresh": "刷新会话",
+  "session.cancel": "取消登录",
+  "session.status": "查看会话状态",
+  "guard.configure": "配置 Steam 令牌",
+  "wallet.info": "查看钱包信息",
+  "inventory.get": "查看库存",
+  "market.get_user_listings": "查看我的市场挂单",
+  "market.place_sell_listing": "出售物品",
+  "market.cancel_sell_listing": "撤销出售挂单",
+  "market.place_buy_order": "创建求购订单",
+  "market.cancel_buy_order": "撤销求购订单",
+  "market.buy_listing": "购买挂单物品",
+  "market.get_buy_order_status": "查看求购订单状态",
+  "trade.get": "查看交易报价",
+  "trade.get_multiple": "查看交易报价列表",
+  "trade.send": "发送交易报价",
+  "trade.accept": "接受交易报价",
+  "trade.decline": "拒绝交易报价",
+  "trade.cancel": "撤销交易报价",
+  "confirmations.get_all": "查看全部确认事项",
+  "confirmations.accept": "批准确认事项",
+  "confirmations.deny": "拒绝确认事项",
+  "confirmations.send_multiple": "批量处理确认事项",
+  "confirmations.accept_all": "批准全部确认事项",
+  "confirmations.deny_all": "拒绝全部确认事项"
+};
+const fieldLabels = {
+  "account_name": "Steam 账号名",
+  "password": "密码",
+  "platform": "登录平台",
+  "persistence": "保持登录",
+  "device_friendly_name": "设备显示名称",
+  "login_handle": "登录句柄",
+  "auth_code": "登录验证码",
+  "code_type": "验证码类型",
+  "renew_refresh_token": "更新刷新令牌",
+  "shared_secret": "共享密钥",
+  "identity_secret": "身份密钥",
+  "device_id": "设备标识",
+  "revocation_code": "撤销验证码",
+  "clear": "清除配置",
+  "sender_time": "发送方时间",
+  "obj": "市场物品名称",
+  "app": "应用标识",
+  "if_modified_since": "修改时间条件",
+  "context_id": "库存上下文标识",
+  "start_asset_id": "起始物品标识",
+  "count": "每页数量",
+  "language": "语言",
+  "start": "起始位置",
+  "asset_id": "物品标识",
+  "to_receive": "实际收入",
+  "currency": "货币编号",
+  "listing_id": "挂单标识",
+  "market_hash_name": "市场物品名称",
+  "price": "单价",
+  "quantity": "数量",
+  "confirmation_id": "确认事项标识",
+  "buy_order_id": "求购订单标识",
+  "subtotal": "小计",
+  "fee": "手续费",
+  "total": "总额",
+  "amount": "数量或金额",
+  "trade_offer_id": "交易报价标识",
+  "active_only": "仅当前有效报价",
+  "historical_only": "仅历史报价",
+  "historical_cutoff": "历史截止时间",
+  "sent": "包含已发送报价",
+  "received": "包含已收到报价",
+  "cursor": "分页游标",
+  "partner": "交易方 SteamID64",
+  "to_partner": "给予对方的物品",
+  "from_partner": "从对方接收的物品",
+  "message": "交易留言",
+  "token": "交易访问令牌",
+  "countered_id": "被还价的报价标识",
+  "confirmation_ids": "确认事项标识列表",
+  "accept": "批准所选事项",
+  "assets": "物品列表",
+  "recipient": "接收方",
+  "steam_id": "Steam 用户标识",
+  "appid": "应用标识",
+  "contextid": "库存上下文标识",
+  "assetid": "物品标识"
+};
+const operationDescriptions = {
+  "public.server_time": "查询 Steam 服务器时间，用于校准 Steam 令牌验证码。",
+  "public.market.get_price_overview": "查看公开市场价格概览。金额字符串保持原样，避免解析造成精度损失。",
+  "wallet.info": "从已登录的库存页面读取钱包信息，并保存可信的钱包货币。市场金额写入前必须先执行此操作。",
+  "inventory.get": "读取已登录账户的一页库存。",
+  "market.get_user_listings": "读取当前出售挂单、待确认挂单和求购订单。",
+  "market.place_sell_listing": "出售一件物品。实际收入（to_receive）以指定钱包货币的最小单位填写整数。Steam 出售接口不接受货币参数。绝不自动确认。",
+  "market.cancel_sell_listing": "撤销一次出售挂单。",
+  "market.place_buy_order": "创建一次求购订单。单价（price）以货币最小单位填写整数。返回待确认状态，不自动批准或重试。",
+  "market.cancel_buy_order": "撤销一次求购订单。",
+  "market.buy_listing": "按明确的小计、手续费和货币购买一次。所有金额以货币最小单位填写整数。不计算手续费，不自动确认或重试。",
+  "market.get_buy_order_status": "读取求购订单状态，不确认或重复下单。",
+  "trade.get": "通过已认证的 IEconService 读取交易报价。",
+  "trade.get_multiple": "读取一页已发送和已收到的交易报价。历史截止时间（historical_cutoff）仅在仅当前有效报价（active_only）启用时可用。",
+  "trade.send": "使用已明确校验的物品和交易方 SteamID64 发送一次交易报价。返回待确认标记，绝不自动确认。",
+  "confirmations.get_all": "读取当前确认事项。遇到未知类型即拒绝处理。不加载 HTML 详情，不隐式更改状态。",
+  "confirmations.send_multiple": "仅管理员可明确授权批量处理确认事项。重新读取实际类型和随机校验值；整批事项必须属于类型 2、3、12、13。",
+  "session.credentials": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.qr": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.code": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.poll": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.cookies": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.refresh": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.cancel": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "session.status": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "guard.configure": "执行有次数限制的 Steam 会话状态转换；敏感信息始终加密保存。",
+  "trade.accept": "接受一次交易报价。接受报价需要发送方的 SteamID64；待确认事项绝不自动批准。",
+  "trade.decline": "拒绝一次交易报价。接受报价需要发送方的 SteamID64；待确认事项绝不自动批准。",
+  "trade.cancel": "撤销一次交易报价。接受报价需要发送方的 SteamID64；待确认事项绝不自动批准。",
+  "confirmations.accept": "重新读取实际服务器类型和随机校验值后，批准一个确认事项。仅支持类型 2、3、12、13。",
+  "confirmations.deny": "重新读取实际服务器类型和随机校验值后，拒绝一个确认事项。仅支持类型 2、3、12、13。",
+  "confirmations.accept_all": "仅管理员可批准全部确认事项；任何事项不属于类型 2、3、12、13 时，拒绝整批处理。",
+  "confirmations.deny_all": "仅管理员可拒绝全部确认事项；任何事项不属于类型 2、3、12、13 时，拒绝整批处理。"
+};
+const fieldHelp = {
+  "price": "以钱包货币的最小单位填写整数单价。",
+  "subtotal": "以钱包货币的最小单位填写整数小计。",
+  "fee": "以钱包货币的最小单位填写整数手续费。",
+  "to_receive": "以钱包货币的最小单位填写实际收入整数。",
+  "currency": "填写与已读取的钱包信息一致的货币编号。",
+  "partner": "填写交易方的 SteamID64。",
+  "auth_code": "填写 5 至 8 位字母或数字组成的验证码。",
+  "confirmation_ids": "以 JSON 数组填写确认事项标识，不得重复。",
+  "to_partner": "以 JSON 数组填写物品，每项包含 appid、contextid、assetid 和 amount；字段名保持 API 原样。",
+  "from_partner": "以 JSON 数组填写物品，每项包含 appid、contextid、assetid 和 amount；字段名保持 API 原样。"
+};
+const groupLabels = {
+  "login": "登录",
+  "inventory": "库存",
+  "market": "市场",
+  "trade": "交易",
+  "confirmations": "确认事项",
+  "advanced": "高级"
+};
+function operationLabel(name) { return (operationLabels[name] || '服务器操作') + ' · ' + name; }
+function fieldLabel(name) { return (fieldLabels[name] || '自定义参数') + ' · ' + name; }
+function scopeLabel(scope) { return ({read:'读取权限',write:'写入权限',admin:'管理员权限'}[scope] || '服务器权限') + '（' + scope + '）'; }
+function enumLabel(value) { const labels = {web:'网页',mobile:'手机',device:'设备验证码',email:'邮件验证码'}; return Object.prototype.hasOwnProperty.call(labels,value) ? labels[value] + ' · ' + value : String(value); }
+function errorMessage(error) { if (error.name === 'AbortError') return '请求超时或已取消。请检查状态后手动操作。'; if (error.name === 'TypeError') return '请求未完成。请检查网络连接和服务器状态。'; if (error.name === 'SyntaxError') return '服务器响应不是有效的 JSON。请检查服务器状态。'; return /[\u3400-\u9fff]/.test(error.message || '') ? error.message : '操作未完成。请检查参数、账户权限和服务器状态。'; }
 function scrub(value, depth = 0) {
-  if (depth > 12) return '[depth limited]';
+  if (depth > 12) return '[已达到嵌套深度限制]';
   if (Array.isArray(value)) return value.slice(0, 200).map(x => scrub(x, depth + 1));
-  if (value && typeof value === 'object') { const out = Object.create(null); for (const [k,v] of Object.entries(value)) out[k] = secretKey.test(k) ? '[hidden]' : scrub(v, depth + 1); return out; }
+  if (value && typeof value === 'object') { const out = Object.create(null); for (const [k,v] of Object.entries(value)) out[k] = secretKey.test(k) ? '[已隐藏]' : scrub(v, depth + 1); return out; }
   if (typeof value === 'string') return value.length > 4000 ? value.slice(0,4000) + '…' : value;
   return value;
 }
 function status(message, tone = '') { $('status').textContent = message; $('status').dataset.tone = tone; }
-function accountPath() { const slug = $('account').value.trim(); if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) throw Error('Choose a valid account slug (letters, numbers, dash or underscore).'); return '/v1/accounts/' + encodeURIComponent(slug); }
+function accountPath() { const slug = $('account').value.trim(); if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) throw Error('请输入有效的账户标识（字母、数字、连字符或下划线）。'); return '/v1/accounts/' + encodeURIComponent(slug); }
 function cancelPoll() { if (pollController) pollController.abort(); pollController = null; $('stop-poll').disabled = true; }
 function resetChallenge() { cancelPoll(); loginHandle = ''; $('challenge').hidden = true; $('challenge-link').removeAttribute('href'); $('challenge-qr').hidden=true; const canvas=$('challenge-qr'); canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); }
 function setBusy(value) { busy = value; $('run').disabled = value || !$('operation').value; $('connect').disabled = value; $('create-account').disabled = value || !token; $('account-info').disabled = value || !token; $('account').disabled=value; $('operation').disabled=value; $('retry').disabled = value || !retryWrite; }
 async function request(intent, signal) {
-  if (!token) throw Error('Connect an API token first.');
+  if (!token) throw Error('请先使用 API 令牌连接。');
   const headers = { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' };
   if (intent.mutating) { headers['X-Confirm-Write'] = 'true'; headers['Idempotency-Key'] = intent.key; }
   const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 65000);
@@ -30,7 +184,7 @@ async function request(intent, signal) {
   try {
     const response = await fetch(intent.path, {method:intent.method, headers, body:intent.body === undefined ? undefined : JSON.stringify(intent.body), cache:'no-store', redirect:'error', signal:controller.signal});
     const data = await response.json();
-    if (!response.ok) { const error = Error('Request failed (HTTP ' + response.status + '). Check account access, arguments and server status.'); error.httpStatus = response.status; throw error; }
+    if (!response.ok) { const error = Error('请求失败（HTTP ' + response.status + '）。请检查账户权限、参数和服务器状态。'); error.httpStatus = response.status; throw error; }
     return data;
   } finally { clearTimeout(timeout); if (signal) signal.removeEventListener('abort',abort); }
 }
@@ -54,43 +208,43 @@ function authResult(data, operation) {
   const url = safeChallengeURL(result.challenge_url || result.qr_url || result.qr_challenge || (operation==='session.poll' ? $('challenge-link').href : null));
   $('challenge').hidden = !loginHandle && !url;
   $('challenge-link').hidden = !url; renderQR(url);
-  if (url) { $('challenge-link').href = url; $('challenge-link').textContent = 'Open Steam sign-in challenge'; }
+  if (url) { $('challenge-link').href = url; $('challenge-link').textContent = '打开 Steam 登录验证'; }
   else $('challenge-link').removeAttribute('href');
   const interval = Number(result.poll_interval_seconds || result.poll_interval || 5);
   $('poll-interval').value = String(Number.isFinite(interval) ? Math.min(30,Math.max(3,interval)) : 5);
   $('poll-login').disabled = !loginHandle || !registry.some(x => x.name === 'session.poll');
-  $('challenge-status').textContent = url ? 'Scan this QR with the Steam mobile app, or open the challenge link. The QR is generated only in this page; no third-party service receives it.' : 'A login challenge is pending. Select the catalog’s code operation if a Steam Guard code is required.';
+  $('challenge-status').textContent = url ? '请使用 Steam 手机应用扫描二维码，或打开验证链接。二维码仅在本页生成，不会发送给第三方服务。' : '登录验证尚未完成。如需 Steam 令牌验证码，请选择“提交登录验证码”操作。';
   const safe = Object.create(null); for (const k of ['status','authenticated','pending','complete','success','requires_code','expires_at']) if (typeof result[k] === 'boolean' || typeof result[k] === 'number') safe[k] = result[k];
-  $('output').textContent = JSON.stringify({operation, result:safe, note:'Authentication secrets and raw response omitted.'},null,2);
+  $('output').textContent = JSON.stringify({operation, result:safe, note:'已省略认证机密和原始响应。'},null,2);
   const complete = result.authenticated === true || result.complete === true || result.status === 'authenticated';
-  if (complete) { resetChallenge(); status('Steam sign-in complete. Session material is not displayed.','success'); }
+  if (complete) { resetChallenge(); status('Steam 登录已完成。会话凭据不会显示。','success'); }
   return complete;
 }
 function groups(op) { const n = op.name; if (/^(session\.|guard\.|login\.|auth\.)/.test(n)) return 'login'; if (/inventory/.test(n)) return 'inventory'; if (/market/.test(n)) return 'market'; if (/confirmation/.test(n)) return 'confirmations'; if (/trade/.test(n)) return 'trade'; return 'advanced'; }
 function renderOperations() {
   const ops = registry.filter(op => activeGroup === 'advanced' || groups(op) === activeGroup);
   $('operation').replaceChildren();
-  for (const op of ops) { const option = document.createElement('option'); option.value = op.name; option.textContent = op.name + (op.mutating ? ' · write' : ' · read'); $('operation').append(option); }
+  for (const op of ops) { const option = document.createElement('option'); option.value = op.name; option.textContent = operationLabel(op.name) + (op.mutating ? ' · 写入' : ' · 只读'); $('operation').append(option); }
   $('empty').hidden = ops.length > 0; $('operation-form').hidden = ops.length === 0;
-  $('empty').textContent = token ? 'No ' + activeGroup + ' operations are advertised by this server. Choose Advanced for all available operations. Nothing is simulated.' : 'Connect an API token to load this server’s supported operations.';
+  $('empty').textContent = token ? '此服务器未提供“' + groupLabels[activeGroup] + '”操作。请选择“高级”查看全部可用操作。此页面不模拟任何操作。' : '请使用 API 令牌连接，以加载此服务器支持的操作。';
   renderFields();
 }
 function renderFields() {
   $('fields').replaceChildren(); const op = registry.find(x => x.name === $('operation').value); $('run').disabled = !op || busy;
   if (!op) return;
-  $('operation-description').textContent = op.description || 'Catalog operation'; $('operation-policy').textContent = (op.mutating ? 'Write · review required' : 'Read-only') + ' · ' + op.scope + ' scope'; $('run').textContent = op.mutating ? 'Review write' : 'Run operation';
+  $('operation-description').textContent = operationDescriptions[op.name] || '服务器提供的操作；请核对参数和权限后执行。'; $('operation-policy').textContent = (op.mutating ? '写入 · 需审核' : '只读') + ' · ' + scopeLabel(op.scope); $('run').textContent = op.mutating ? '审核写入' : '执行操作';
   for (const [name,schema] of Object.entries(op.schema.properties)) {
     const wrapper = document.createElement('div'); wrapper.className = 'field';
-    const label = document.createElement('label'); const id = 'arg-' + name; label.htmlFor = id; label.textContent = name.replace(/_/g,' ') + (op.schema.required.includes(name) ? ' (required)' : ' (optional)');
+    const label = document.createElement('label'); const id = 'arg-' + name; label.htmlFor = id; label.textContent = fieldLabel(name) + (op.schema.required.includes(name) ? '（必填）' : '（选填）');
     let input;
-    if (Array.isArray(schema.enum)) { input = document.createElement('select'); if (!op.schema.required.includes(name)) {const blank=document.createElement('option');blank.value='';blank.textContent='Not supplied';input.append(blank);} for (const value of schema.enum) { const option=document.createElement('option');option.value=String(value);option.textContent=String(value);input.append(option); } }
+    if (Array.isArray(schema.enum)) { input = document.createElement('select'); if (!op.schema.required.includes(name)) {const blank=document.createElement('option');blank.value='';blank.textContent='不提供';input.append(blank);} for (const value of schema.enum) { const option=document.createElement('option');option.value=String(value);option.textContent=enumLabel(value);input.append(option); } }
     else if (schema.type === 'array' || schema.type === 'object') { input=document.createElement('textarea'); input.rows=6; input.placeholder=schema.type === 'array' ? '[]' : '{}'; }
     else { input = document.createElement('input'); input.type = schema.type === 'boolean' ? 'checkbox' : schema.type === 'integer' || schema.type === 'number' ? 'number' : secretKey.test(name) ? 'password' : 'text'; }
     input.id = id; input.name = name; input.dataset.argument = name; input.dataset.type = schema.type; input.required = schema.type !== 'boolean' && op.schema.required.includes(name); input.autocomplete='off'; input.spellcheck=false;
     if (schema.type === 'integer') input.step='1'; if (typeof schema.minimum === 'number') input.min=String(schema.minimum); if (typeof schema.maximum === 'number') input.max=String(schema.maximum); if (typeof schema.maxLength === 'number') input.maxLength=schema.maxLength;
     if (name === 'login_handle' && loginHandle) input.value = loginHandle;
     if (schema.type === 'boolean') { wrapper.classList.add('field-check'); wrapper.append(input,label); } else wrapper.append(label,input);
-    if (schema.description) {const hint=document.createElement('small');hint.id=id+'-help';hint.textContent=schema.description;input.setAttribute('aria-describedby',hint.id);wrapper.append(hint);}
+    if (schema.description) {const hint=document.createElement('small');hint.id=id+'-help';hint.textContent=fieldHelp[name] || '请按服务器规定的格式填写此参数。';input.setAttribute('aria-describedby',hint.id);wrapper.append(hint);}
     $('fields').append(wrapper);
   }
 }
@@ -103,43 +257,43 @@ function readArguments() {
     const submittedValue=values.get(input);
     const name = input.dataset.argument, type = input.dataset.type;
     if (type === 'boolean') { if (input.checked || op.schema.required.includes(name)) args[name]=input.checked; }
-    else if (submittedValue !== '') { let value; if(type === 'array' || type === 'object') { try {value=JSON.parse(submittedValue);}catch {throw Error('Enter valid JSON for '+name+'.');} if(type === 'array' ? !Array.isArray(value) : !value || typeof value !== 'object' || Array.isArray(value)) throw Error('Expected a JSON '+type+' for '+name+'.'); } else value = type === 'integer' || type === 'number' ? Number(submittedValue) : submittedValue; if (typeof value === 'number' && (!Number.isFinite(value) || (type === 'integer' && !Number.isSafeInteger(value)))) throw Error('Enter a valid number for ' + name + '.'); args[name]=value; }
+    else if (submittedValue !== '') { let value; if(type === 'array' || type === 'object') { try {value=JSON.parse(submittedValue);}catch {throw Error('请为“'+fieldLabel(name)+'”输入有效的 JSON。');} if(type === 'array' ? !Array.isArray(value) : !value || typeof value !== 'object' || Array.isArray(value)) throw Error('“'+fieldLabel(name)+'”需要 JSON '+(type === 'array' ? '数组' : '对象')+'。'); } else value = type === 'integer' || type === 'number' ? Number(submittedValue) : submittedValue; if (typeof value === 'number' && (!Number.isFinite(value) || (type === 'integer' && !Number.isSafeInteger(value)))) throw Error('请为“' + fieldLabel(name) + '”输入有效的数字。'); args[name]=value; }
   }
   // Clear credentials before any confirmation or network dispatch.
   for (const input of $('fields').querySelectorAll('input[type=password]')) input.value='';
   return args;
 }
-function summaryValue(args, pattern) { const entries = Object.entries(args).filter(([name]) => pattern.test(name) && !secretKey.test(name)); return entries.length ? entries.map(([name,value]) => name + ': ' + JSON.stringify(scrub(value))).join('\n') : 'Not specified by this operation'; }
+function summaryValue(args, pattern) { const entries = Object.entries(args).filter(([name]) => pattern.test(name) && !secretKey.test(name)); return entries.length ? entries.map(([name,value]) => fieldLabel(name) + '：' + JSON.stringify(scrub(value))).join('\n') : '此操作未指定'; }
 function reviewWrite(intent, isRetry = false) {
   cancelPoll(); pendingWrite = intent;
-  $('review-operation').textContent = intent.name; $('review-account').textContent = intent.account;
+  $('review-operation').textContent = operationLabel(intent.name); $('review-account').textContent = intent.account;
   const args = intent.body && intent.body.arguments || {};
   $('review-amount').textContent = summaryValue(args,/amount|price|quantity|total|subtotal|fee|to_receive|currency/i);
   $('review-item').textContent = summaryValue(args,/item|asset|listing|offer|confirmation|(^id$)|app|context|obj/i);
   $('review-recipient').textContent = summaryValue(args,/recipient|partner|receiver|destination|trade_url|steam_id/i);
   $('review-arguments').textContent = JSON.stringify(scrub(args),null,2);
-  $('review-warning').textContent = isRetry ? 'Explicit retry: the exact original request and idempotency key will be reused. A previous write may already have completed.' : 'This action changes account or Steam state. Verify the account and every argument before authorizing it.';
+  $('review-warning').textContent = isRetry ? '手动重试：将复用完全相同的原始请求和幂等键。此前的写入可能已经完成。' : '此操作会更改账户或 Steam 状态。授权前请核对账户和所有参数。';
   $('acknowledge').checked = false; $('confirm-write').disabled = true; $('write-dialog').showModal();
 }
 async function dispatch(intent, signal) {
-  const current = generation; setBusy(true); status('Running ' + intent.name + '…');
+  const current = generation; setBusy(true); status('正在执行：' + operationLabel(intent.name) + '…');
   try {
     const data = await request(intent,signal);
     if (current !== generation) return;
     retryWrite = null;
     if (groups({name:intent.name}) === 'login') authResult(data,intent.name);
     else $('output').textContent = JSON.stringify(scrub(data),null,2);
-    status(intent.name + ' completed.','success');
+    status(operationLabel(intent.name) + '已完成。','success');
     return data;
   } catch (error) {
     if (current !== generation || signal && signal.aborted) return;
     if (intent.mutating && !intent.sensitive) retryWrite = intent;
-    status(intent.mutating ? 'Write not confirmed as completed. Do not submit it as a new action. Inspect state; use Explicit retry only to reuse this exact request.' : error.name === 'AbortError' ? 'Request timed out or was cancelled. You may run a new read manually.' : error.message,'error');
+    status(intent.mutating ? '尚未确认写入是否完成。请勿将其作为新操作再次提交。请先检查状态；如需复用完全相同的请求，仅使用“手动重试”。' : error.name === 'AbortError' ? '请求超时或已取消。您可以手动发起新的只读请求。' : errorMessage(error),'error');
   } finally { if (intent.sensitive && intent.body) intent.body = undefined; if (current === generation) setBusy(false); }
 }
 function manualIntent(op,args) { return {name:op.name, account:$('account').value.trim(), method:'POST', path:accountPath()+'/operations/'+encodeURIComponent(op.name), body:{arguments:args}, mutating:op.mutating, sensitive:Object.keys(args).some(k=>secretKey.test(k)), key:op.mutating ? crypto.randomUUID() : undefined}; }
 function discardPending() { if (pendingWrite) pendingWrite.body=undefined; pendingWrite=null; }
-$('operation-form').addEventListener('submit',event=>{event.preventDefault(); if (busy) return; cancelPoll(); retryWrite=null; try {const op=registry.find(x=>x.name===$('operation').value); if (!op) throw Error('Choose an operation.'); const intent=manualIntent(op,readArguments()); if(intent.mutating) reviewWrite(intent); else void dispatch(intent);} catch(error) {status(error.message,'error');} });
+$('operation-form').addEventListener('submit',event=>{event.preventDefault(); if (busy) return; cancelPoll(); retryWrite=null; try {const op=registry.find(x=>x.name===$('operation').value); if (!op) throw Error('请选择操作。'); const intent=manualIntent(op,readArguments()); if(intent.mutating) reviewWrite(intent); else void dispatch(intent);} catch(error) {status(errorMessage(error),'error');} });
 $('acknowledge').addEventListener('change',()=>{$('confirm-write').disabled=!$('acknowledge').checked;});
 $('confirm-write').addEventListener('click',()=>{if (!pendingWrite || !$('acknowledge').checked || busy) return; const intent=pendingWrite; pendingWrite=null; $('write-dialog').close(); if(intent.polling) void startPolling(); else void dispatch(intent);});
 $('cancel-write').addEventListener('click',()=>{$('write-dialog').close();discardPending();});
@@ -148,33 +302,33 @@ $('write-dialog').addEventListener('close',()=>{discardPending();$('acknowledge'
 $('retry').addEventListener('click',()=>{if(retryWrite && !busy) reviewWrite({...retryWrite},true);});
 $('operation').addEventListener('change',()=>{cancelPoll();renderFields();});
 for (const button of document.querySelectorAll('[data-group]')) button.addEventListener('click',()=>{activeGroup=button.dataset.group;for(const item of document.querySelectorAll('[data-group]')) item.setAttribute('aria-pressed',String(item===button));$('workflow-title').textContent=button.textContent;renderOperations();});
-$('account').addEventListener('change',()=>{resetChallenge();retryWrite=null;setBusy(busy);$('output').textContent='Account changed. Run an operation to inspect this account.';renderFields();});
-function renderAccounts(accounts) { $('accounts').replaceChildren(); for(const slug of accounts) {if(typeof slug !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) continue;const button=document.createElement('button');button.type='button';button.textContent=slug;button.setAttribute('aria-pressed',String(slug===$('account').value));button.addEventListener('click',()=>{if(busy)return;$('account').value=slug;$('account').dispatchEvent(new Event('change'));for(const item of $('accounts').children)item.setAttribute('aria-pressed',String(item===button));});$('accounts').append(button);} if(!$('accounts').children.length){const note=document.createElement('p');note.className='muted';note.textContent='No accounts returned. Enter an account slug below.';$('accounts').append(note);} }
-$('connection-form').addEventListener('submit',async event=>{event.preventDefault();if(busy)return;resetChallenge();generation++;token=$('token').value.trim();$('token').value='';retryWrite=null;registry=[];renderOperations();if(!token){status('Enter an API bearer token.','error');return;}setBusy(true);status('Loading supported operations…');const current=generation;try{const data=await request({method:'GET',path:'/v1/operations'});if(current!==generation)return;registry=Array.isArray(data.operations)?data.operations.filter(x=>x&&typeof x.name==='string'&&/^[a-zA-Z0-9_.-]{1,150}$/.test(x.name)&&typeof x.mutating==='boolean'&&x.schema&&x.schema.properties&&Array.isArray(x.schema.required)):[];renderOperations();$('connection-state').textContent='Connected · token in memory';status('Catalog loaded. Choose an account and operation.','success');try{const list=await request({method:'GET',path:'/v1/accounts'});if(current===generation)renderAccounts(Array.isArray(list.accounts)?list.accounts:[]);}catch{if(current===generation)status('Catalog loaded. Account listing requires admin access; enter an account slug manually.');}}catch(error){if(current===generation){token='';$('connection-state').textContent='Disconnected';status(error.message,'error');}}finally{if(current===generation)setBusy(false);}});
-$('disconnect').addEventListener('click',()=>{generation++;resetChallenge();discardPending();if($('write-dialog').open)$('write-dialog').close();token='';registry=[];retryWrite=null;$('token').value='';$('output').textContent='Disconnected. Response cleared.';$('accounts').replaceChildren();$('connection-state').textContent='Disconnected';renderOperations();setBusy(false);status('Token and login challenge cleared from page memory.');});
-$('clear-result').addEventListener('click',()=>{$('output').textContent='Response cleared.';});
-$('create-account').addEventListener('click',()=>{if(busy)return;try{reviewWrite({name:'account.create',account:$('account').value.trim(),method:'PUT',path:accountPath(),body:{},mutating:true,key:crypto.randomUUID()});}catch(error){status(error.message,'error');}});
-$('account-info').addEventListener('click',()=>{if(busy)return;cancelPoll();try{void dispatch({name:'account.info',method:'GET',path:accountPath(),mutating:false});}catch(error){status(error.message,'error');}});
-function pollDelay(ms,signal) {return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(new DOMException('Cancelled','AbortError'));};const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();});}
-async function startPolling(){if(busy || !loginHandle)return;cancelPoll();const op=registry.find(x=>x.name==='session.poll');if(!op){status('Login polling is unavailable in this catalog.');return;}if(!op.schema.properties.login_handle || op.schema.required.some(k=>k!=='login_handle')){status('This polling schema requires additional arguments. Run the operation manually.');return;}const interval=Math.min(30,Math.max(3,Number($('poll-interval').value)||5));$('poll-interval').value=String(interval);const controller=new AbortController();pollController=controller;$('stop-poll').disabled=false;$('poll-login').disabled=true;const current=generation;try{for(let attempt=0;attempt<20;attempt++){if(controller.signal.aborted || current!==generation)break;status('Checking login · '+(attempt+1)+' of 20…');const data=await request(manualIntent(op,{login_handle:loginHandle}),controller.signal);if(controller.signal.aborted || current!==generation)break;if(authResult(data,op.name))break;const result=data.result||{};const suggested=Number(result.poll_interval_seconds||result.poll_interval||interval);const next=Number(result.next_poll_at);const wait=Number.isFinite(next)&&next>0 ? next*1000-Date.now() : suggested*1000;await pollDelay(Math.min(30000,Math.max(interval*1000,Number.isFinite(wait)?wait:interval*1000)),controller.signal);}if(!controller.signal.aborted && current===generation)status('Login polling finished. Restart manually if the challenge is still pending.');}catch(error){if(!controller.signal.aborted && current===generation)status(error.message+' Polling stopped; no request was retried.','error');}finally{if(pollController===controller)cancelPoll();$('poll-login').disabled=!loginHandle;}}
-$('poll-login').addEventListener('click',()=>{if(busy||!loginHandle)return;const op=registry.find(x=>x.name==='session.poll');if(!op)return;if(op.mutating){try{const intent=manualIntent(op,{login_handle:loginHandle});intent.polling=true;reviewWrite(intent);$('review-warning').textContent='Authorize up to 20 session.poll checks for the current login challenge. Each check changes encrypted login session state and uses a fresh key; failed checks are never retried. Stop at any time. No financial operation is included.';}catch(error){status(error.message,'error');}}else void startPolling();});
-$('stop-poll').addEventListener('click',()=>{cancelPoll();status('Login polling stopped.');});
+$('account').addEventListener('change',()=>{resetChallenge();retryWrite=null;setBusy(busy);$('output').textContent='账户已切换。请执行操作以查看此账户。';renderFields();});
+function renderAccounts(accounts) { $('accounts').replaceChildren(); for(const slug of accounts) {if(typeof slug !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(slug)) continue;const button=document.createElement('button');button.type='button';button.textContent=slug;button.setAttribute('aria-pressed',String(slug===$('account').value));button.addEventListener('click',()=>{if(busy)return;$('account').value=slug;$('account').dispatchEvent(new Event('change'));for(const item of $('accounts').children)item.setAttribute('aria-pressed',String(item===button));});$('accounts').append(button);} if(!$('accounts').children.length){const note=document.createElement('p');note.className='muted';note.textContent='未返回任何账户。请在下方输入账户标识。';$('accounts').append(note);} }
+$('connection-form').addEventListener('submit',async event=>{event.preventDefault();if(busy)return;resetChallenge();generation++;token=$('token').value.trim();$('token').value='';retryWrite=null;registry=[];renderOperations();if(!token){status('请输入 API 访问令牌。','error');return;}setBusy(true);status('正在加载支持的操作…');const current=generation;try{const data=await request({method:'GET',path:'/v1/operations'});if(current!==generation)return;registry=Array.isArray(data.operations)?data.operations.filter(x=>x&&typeof x.name==='string'&&/^[a-zA-Z0-9_.-]{1,150}$/.test(x.name)&&typeof x.mutating==='boolean'&&x.schema&&x.schema.properties&&Array.isArray(x.schema.required)):[];renderOperations();$('connection-state').textContent='已连接 · 令牌仅保存在内存中';status('操作目录已加载。请选择账户和操作。','success');try{const list=await request({method:'GET',path:'/v1/accounts'});if(current===generation)renderAccounts(Array.isArray(list.accounts)?list.accounts:[]);}catch{if(current===generation)status('操作目录已加载。查看账户列表需要管理员权限；请手动输入账户标识。');}}catch(error){if(current===generation){token='';$('connection-state').textContent='未连接';status(errorMessage(error),'error');}}finally{if(current===generation)setBusy(false);}});
+$('disconnect').addEventListener('click',()=>{generation++;resetChallenge();discardPending();if($('write-dialog').open)$('write-dialog').close();token='';registry=[];retryWrite=null;$('token').value='';$('output').textContent='已断开连接，响应已清空。';$('accounts').replaceChildren();$('connection-state').textContent='未连接';renderOperations();setBusy(false);status('令牌和登录验证已从页面内存中清除。');});
+$('clear-result').addEventListener('click',()=>{$('output').textContent='响应已清空。';});
+$('create-account').addEventListener('click',()=>{if(busy)return;try{reviewWrite({name:'account.create',account:$('account').value.trim(),method:'PUT',path:accountPath(),body:{},mutating:true,key:crypto.randomUUID()});}catch(error){status(errorMessage(error),'error');}});
+$('account-info').addEventListener('click',()=>{if(busy)return;cancelPoll();try{void dispatch({name:'account.info',method:'GET',path:accountPath(),mutating:false});}catch(error){status(errorMessage(error),'error');}});
+function pollDelay(ms,signal) {return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(new DOMException('已取消','AbortError'));};const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();});}
+async function startPolling(){if(busy || !loginHandle)return;cancelPoll();const op=registry.find(x=>x.name==='session.poll');if(!op){status('此操作目录不支持登录轮询。');return;}if(!op.schema.properties.login_handle || op.schema.required.some(k=>k!=='login_handle')){status('此轮询操作需要额外参数。请手动执行操作。');return;}const interval=Math.min(30,Math.max(3,Number($('poll-interval').value)||5));$('poll-interval').value=String(interval);const controller=new AbortController();pollController=controller;$('stop-poll').disabled=false;$('poll-login').disabled=true;const current=generation;try{for(let attempt=0;attempt<20;attempt++){if(controller.signal.aborted || current!==generation)break;status('正在检查登录 · 第 '+(attempt+1)+' 次，共最多 20 次…');const data=await request(manualIntent(op,{login_handle:loginHandle}),controller.signal);if(controller.signal.aborted || current!==generation)break;if(authResult(data,op.name))break;const result=data.result||{};const suggested=Number(result.poll_interval_seconds||result.poll_interval||interval);const next=Number(result.next_poll_at);const wait=Number.isFinite(next)&&next>0 ? next*1000-Date.now() : suggested*1000;await pollDelay(Math.min(30000,Math.max(interval*1000,Number.isFinite(wait)?wait:interval*1000)),controller.signal);}if(!controller.signal.aborted && current===generation)status('登录轮询已结束。如验证仍未完成，请手动重新开始。');}catch(error){if(!controller.signal.aborted && current===generation)status(errorMessage(error)+' 轮询已停止，未重试任何请求。','error');}finally{if(pollController===controller)cancelPoll();$('poll-login').disabled=!loginHandle;}}
+$('poll-login').addEventListener('click',()=>{if(busy||!loginHandle)return;const op=registry.find(x=>x.name==='session.poll');if(!op)return;if(op.mutating){try{const intent=manualIntent(op,{login_handle:loginHandle});intent.polling=true;reviewWrite(intent);$('review-warning').textContent='授权对当前登录验证执行最多 20 次登录状态检查（session.poll）。每次检查都会更改加密登录会话状态，并使用新的幂等键；失败的检查绝不重试。您可随时停止。不包含任何资金操作。';}catch(error){status(errorMessage(error),'error');}}else void startPolling();});
+$('stop-poll').addEventListener('click',()=>{cancelPoll();status('登录轮询已停止。');});
 window.addEventListener('pagehide',()=>{generation++;cancelPoll();token='';loginHandle='';discardPending();retryWrite=null;});
 renderOperations();setBusy(false);
 `;
 export const HTML = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><title>Steam Worker · Account console</title><style>${style}</style></head><body>
-<a class="skip" href="#workspace">Skip to operations</a>
-<header class="masthead"><div class="wordmark"><svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 9h22v14H5zM11 9v14M21 9v14M5 16h22" stroke="currentColor" stroke-width="2"/></svg><h1>STEAM WORKER</h1></div><span class="badge">Independent account console</span></header>
-<section class="connection" aria-label="API connection"><form id="connection-form"><div class="token-field"><label for="token">API bearer token</label><input id="token" type="password" autocomplete="off" placeholder="Paste a token to connect" required></div><button class="primary" id="connect" type="submit">Connect</button><button id="disconnect" type="button">Disconnect</button></form><p id="connection-state">Disconnected · token stays in page memory, never browser storage</p></section>
-<div class="layout"><aside aria-label="Account selection"><h2>Accounts</h2><p class="muted">Choose the account for every request.</p><div id="accounts" class="account-list"></div><label for="account">Account slug</label><input id="account" autocomplete="off" maxlength="64" placeholder="Enter account slug"><small>Manual entry works without account-list permission.</small><div class="account-actions"><button id="account-info" type="button">Inspect</button><button id="create-account" type="button">Create account</button></div></aside>
-<main id="workspace" class="workspace" tabindex="-1"><div class="workspace-head"><div><h2>Account workbench</h2><p class="muted">Inspect first. Review before changing state.</p></div><span class="badge">Registry-driven operations</span></div>
-<nav class="nav" aria-label="Workflows"><button type="button" data-group="login" aria-pressed="true">Sign in</button><button type="button" data-group="inventory" aria-pressed="false">Inventory</button><button type="button" data-group="market" aria-pressed="false">Market</button><button type="button" data-group="trade" aria-pressed="false">Trades</button><button type="button" data-group="confirmations" aria-pressed="false">Confirmations</button><button type="button" data-group="advanced" aria-pressed="false">Advanced</button></nav>
-<div class="workgrid"><section class="editor" aria-labelledby="workflow-title"><h3 id="workflow-title">Sign in</h3><p class="muted">Fields and permissions come directly from this server. Optional blank fields are omitted.</p><div id="empty" class="empty">Connect to discover supported operations.</div><form id="operation-form" hidden><div class="operation-select"><label for="operation">Operation</label><select id="operation"></select><p id="operation-description" class="operation-note"></p><span id="operation-policy" class="badge"></span></div><div id="fields" class="fields"></div><div class="form-actions"><button id="run" class="primary" type="submit">Run operation</button><button id="retry" type="button" disabled>Explicit retry</button></div><p class="retry-note">Writes never retry automatically. An explicit retry reuses the last non-sensitive request and its key.</p></form>
-<section id="challenge" class="challenge" aria-labelledby="challenge-title" hidden><h3 id="challenge-title">Steam sign-in challenge</h3><p id="challenge-status"></p><canvas id="challenge-qr" role="img" aria-label="Steam sign-in QR challenge; alternatively use the challenge link below" hidden></canvas><a id="challenge-link" target="_blank" rel="noopener noreferrer" hidden>Open Steam sign-in challenge</a><label for="poll-interval">Polling interval (seconds)</label><input id="poll-interval" type="number" min="3" max="30" step="1" value="5"><small>Up to 20 login checks. Session writes require explicit batch authorization; each uses a new key.</small><div class="row"><button id="poll-login" type="button" disabled>Authorize login polling</button><button id="stop-poll" type="button" disabled>Stop polling</button></div></section></section>
-<section class="result-panel" aria-labelledby="result-title"><div class="result-head"><h3 id="result-title">Response inspector</h3><button id="clear-result" type="button">Clear</button></div><pre id="output" tabindex="0">No request yet. Connect and choose an account to begin.</pre></section></div><p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p></main></div>
-<footer>Steam tribute, not an official Steam product. No third-party assets or challenge services. Disconnect when finished on a shared device.</footer>
-<dialog id="write-dialog" aria-labelledby="review-title" aria-describedby="review-warning"><h2 id="review-title">Review this write</h2><p id="review-warning"></p><dl><dt>Operation</dt><dd id="review-operation"></dd><dt>Account</dt><dd id="review-account"></dd><dt>Amount</dt><dd id="review-amount"></dd><dt>Items</dt><dd id="review-item"></dd><dt>Recipient</dt><dd id="review-recipient"></dd></dl><details><summary>All arguments (secrets hidden)</summary><pre id="review-arguments"></pre></details><div class="ack"><input id="acknowledge" type="checkbox"><label for="acknowledge">I checked the account, amounts, items and recipient, and authorize this write.</label></div><div class="dialog-actions"><button id="cancel-write" type="button" autofocus>Cancel</button><button id="confirm-write" class="primary" type="button" disabled>Authorize write</button></div></dialog>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><title>Steam Worker · 账户控制台</title><style>${style}</style></head><body>
+<a class="skip" href="#workspace">跳转到操作区</a>
+<header class="masthead"><div class="wordmark"><svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 9h22v14H5zM11 9v14M21 9v14M5 16h22" stroke="currentColor" stroke-width="2"/></svg><h1>STEAM WORKER</h1></div><span class="badge">独立账户控制台</span></header>
+<section class="connection" aria-label="API 连接"><form id="connection-form"><div class="token-field"><label for="token">API 访问令牌</label><input id="token" type="password" autocomplete="off" placeholder="粘贴令牌以连接" required></div><button class="primary" id="connect" type="submit">连接</button><button id="disconnect" type="button">断开连接</button></form><p id="connection-state">未连接 · 令牌仅保存在页面内存中，不写入浏览器存储</p></section>
+<div class="layout"><aside aria-label="账户选择"><h2>账户</h2><p class="muted">为每个请求选择账户。</p><div id="accounts" class="account-list"></div><label for="account">账户标识</label><input id="account" autocomplete="off" maxlength="64" placeholder="输入账户标识"><small>没有账户列表权限时，仍可手动输入。</small><div class="account-actions"><button id="account-info" type="button">查看账户</button><button id="create-account" type="button">创建账户</button></div></aside>
+<main id="workspace" class="workspace" tabindex="-1"><div class="workspace-head"><div><h2>账户工作台</h2><p class="muted">先查看状态，更改前请审核。</p></div><span class="badge">操作以服务器目录为准</span></div>
+<nav class="nav" aria-label="工作流程"><button type="button" data-group="login" aria-pressed="true">登录</button><button type="button" data-group="inventory" aria-pressed="false">库存</button><button type="button" data-group="market" aria-pressed="false">市场</button><button type="button" data-group="trade" aria-pressed="false">交易</button><button type="button" data-group="confirmations" aria-pressed="false">确认事项</button><button type="button" data-group="advanced" aria-pressed="false">高级</button></nav>
+<div class="workgrid"><section class="editor" aria-labelledby="workflow-title"><h3 id="workflow-title">登录</h3><p class="muted">字段和权限由此服务器提供。留空的选填字段不会提交。</p><div id="empty" class="empty">连接后即可查看支持的操作。</div><form id="operation-form" hidden><div class="operation-select"><label for="operation">操作</label><select id="operation"></select><p id="operation-description" class="operation-note"></p><span id="operation-policy" class="badge"></span></div><div id="fields" class="fields"></div><div class="form-actions"><button id="run" class="primary" type="submit">执行操作</button><button id="retry" type="button" disabled>手动重试</button></div><p class="retry-note">写入绝不自动重试。手动重试会复用最近一次不含敏感信息的请求及其幂等键。</p></form>
+<section id="challenge" class="challenge" aria-labelledby="challenge-title" hidden><h3 id="challenge-title">Steam 登录验证</h3><p id="challenge-status"></p><canvas id="challenge-qr" role="img" aria-label="Steam 登录验证二维码；也可使用下方的验证链接" hidden></canvas><a id="challenge-link" target="_blank" rel="noopener noreferrer" hidden>打开 Steam 登录验证</a><label for="poll-interval">轮询间隔（秒）</label><input id="poll-interval" type="number" min="3" max="30" step="1" value="5"><small>最多检查登录状态 20 次。会话写入需要明确的批量授权；每次使用新的幂等键。</small><div class="row"><button id="poll-login" type="button" disabled>授权登录轮询</button><button id="stop-poll" type="button" disabled>停止轮询</button></div></section></section>
+<section class="result-panel" aria-labelledby="result-title"><div class="result-head"><h3 id="result-title">响应查看器</h3><button id="clear-result" type="button">清空</button></div><pre id="output" tabindex="0">尚未发送请求。请先连接并选择账户。</pre></section></div><p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p></main></div>
+<footer>向 Steam 致敬，并非 Steam 官方产品。不使用第三方资源或验证服务。在共享设备上使用完毕后，请断开连接。</footer>
+<dialog id="write-dialog" aria-labelledby="review-title" aria-describedby="review-warning"><h2 id="review-title">审核此次写入</h2><p id="review-warning"></p><dl><dt>操作</dt><dd id="review-operation"></dd><dt>账户</dt><dd id="review-account"></dd><dt>金额</dt><dd id="review-amount"></dd><dt>物品</dt><dd id="review-item"></dd><dt>接收方</dt><dd id="review-recipient"></dd></dl><details><summary>全部参数（机密已隐藏）</summary><pre id="review-arguments"></pre></details><div class="ack"><input id="acknowledge" type="checkbox"><label for="acknowledge">我已核对账户、金额、物品和接收方，并授权此次写入。</label></div><div class="dialog-actions"><button id="cancel-write" type="button" autofocus>取消</button><button id="confirm-write" class="primary" type="button" disabled>授权写入</button></div></dialog>
 <script>${script}</script></body></html>`;
 export function consoleHeaders() {
   return {
@@ -182,6 +336,6 @@ export function consoleHeaders() {
     'Cache-Control': 'no-store',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'no-referrer',
-    'Content-Security-Policy': "default-src 'none'; script-src 'sha256-4qjNB/Gz/EQhF016CGtZcGT2Ix8S67M1zcynTJV2tWs='; style-src 'sha256-LDLoMSHlq6mId2KKA8zstNjol8My0McIPC/heWQ5r0M='; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+    'Content-Security-Policy': "default-src 'none'; script-src 'sha256-9aIPOo06MR3NfUD2bIOTWB7aae3GOYXRjdQ7v7XYlR4='; style-src 'sha256-LDLoMSHlq6mId2KKA8zstNjol8My0McIPC/heWQ5r0M='; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   };
 }

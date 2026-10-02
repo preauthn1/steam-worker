@@ -9,7 +9,7 @@ web
 Operate account-scoped Steam API workflows through a lightweight Worker console: select an account, sign in when supported, inspect inventory and prices, and deliberately review trading, market and confirmation actions.
 
 ## Operating Context
-Desktop and mobile have equal priority. The console consumes the authenticated `/v1/operations` registry rather than inventing backend capabilities. Account operations use `/v1/accounts/:slug/operations/:name` with `{arguments}`.
+Desktop and mobile have equal priority. The frontend language is Simplified Chinese; exact API operation names and field identifiers remain unchanged for interoperability. The console consumes the authenticated `/v1/operations` registry rather than inventing backend capabilities. Account operations use `/v1/accounts/:slug/operations/:name` with `{arguments}`.
 
 ## Capabilities and Constraints
 - Zero-dependency browser UI with system fonts; no third-party requests or QR services.
