@@ -18,6 +18,7 @@
 
 1. 首次打开：用管理员 API 令牌授权，设置你自己的访问密码（8–128 位）。服务端只保存 PBKDF2-SHA256 哈希（`DATA_DIR/console-password.json`）。
 2. 之后用这个密码登录，得到 12 小时有效的内存会话；15 分钟内失败 10 次会暂时锁定；退出或修改密码会让会话立即失效。
+   页面不使用 `type=password` 和 `<form>`，浏览器密码管理器不会提示保存访问密码或管理员令牌（Chromium 密码管理器日志验证：无保存提示）。
 3. 共享 Steam 登录窗口，页面在本机识别二维码 → 显示登录设备 → 批准。二维码过期会自动跳过并等待新码。也可以粘贴二维码链接或上传截图。
 
 会话接口：`GET/POST /v1/session/password`（设置需管理员 API 令牌）、`POST /v1/session/login`、`POST /v1/session/logout`。其余 HTTP API 不变。

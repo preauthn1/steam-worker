@@ -72,6 +72,9 @@ main{flex:1;display:flex;justify-content:center;padding:8px clamp(14px,4vw,40px)
 .input:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(102,192,244,.16)}
 .input input{flex:1;min-width:0;min-height:48px;padding:12px 14px;background:transparent;border:0;outline:0}
 .input input::placeholder{color:#6f849a}
+.input input.secret{-webkit-text-security:disc;text-security:disc;font-family:caption,system-ui,sans-serif;letter-spacing:.08em}
+.input input.secret.shown{-webkit-text-security:none;text-security:none;letter-spacing:normal}
+.input input.secret:placeholder-shown{letter-spacing:normal}
 .input .btn.ghost{margin-right:4px}
 .hint{font-size:13px;color:var(--mute)}
 .form-err{margin-top:12px;font-size:14px;color:var(--err)}.form-err:empty{display:none}
@@ -201,18 +204,17 @@ dialog[open]{animation:rise .35s var(--ease)}
     <div class="seal"><svg class="i"><use href="#i-lock"/></svg></div>
     <h1 class="title" id="lock-title">输入访问密码</h1>
     <p class="lead" id="lock-lead">使用你设置的密码进入。</p>
-    <form id="login-form" autocomplete="on" novalidate>
-      <input type="text" name="username" value="steam-worker" autocomplete="username" hidden>
+    <div id="login-form" role="form" aria-labelledby="lock-title">
       <div class="field">
         <label for="password">访问密码</label>
-        <div class="input"><input id="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="你的密码"><button class="btn ghost" type="button" data-reveal="password" aria-label="显示密码"><svg class="i"><use href="#i-eye"/></svg></button></div>
+        <div class="input"><input id="password" type="text" class="secret" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" maxlength="128" placeholder="你的密码"><button class="btn ghost" type="button" data-reveal="password" aria-label="显示密码"><svg class="i"><use href="#i-eye"/></svg></button></div>
       </div>
       <p class="form-err" id="login-err" role="alert"></p>
       <div class="form-actions">
-        <button class="btn primary lg" id="login-btn" type="submit">进入</button>
+        <button class="btn primary lg" id="login-btn" type="button">进入</button>
         <button class="link" id="to-setup" type="button">首次使用，或要修改密码？</button>
       </div>
-    </form>
+    </div>
   </div>
 </section>
 
@@ -222,27 +224,26 @@ dialog[open]{animation:rise .35s var(--ease)}
     <div class="seal"><svg class="i"><use href="#i-shield"/></svg></div>
     <h1 class="title" id="setup-title">设置访问密码</h1>
     <p class="lead">只需一次。用服务器的管理员令牌授权，之后都用你自己的密码登录。</p>
-    <form id="setup-form" autocomplete="on" novalidate>
-      <input type="text" name="username" value="steam-worker" autocomplete="username" hidden>
+    <div id="setup-form" role="form" aria-labelledby="setup-title">
       <div class="field">
         <label for="setup-key">管理员令牌</label>
-        <div class="input"><input id="setup-key" type="password" autocomplete="off" spellcheck="false" maxlength="512" placeholder="部署时生成的长令牌"></div>
+        <div class="input"><input id="setup-key" type="text" class="secret" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" maxlength="512" placeholder="部署时生成的长令牌"></div>
       </div>
       <div class="field">
         <label for="new-password">新密码</label>
-        <div class="input"><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="至少 8 位"><button class="btn ghost" type="button" data-reveal="new-password" aria-label="显示密码"><svg class="i"><use href="#i-eye"/></svg></button></div>
+        <div class="input"><input id="new-password" type="text" class="secret" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" maxlength="128" placeholder="至少 8 位"><button class="btn ghost" type="button" data-reveal="new-password" aria-label="显示密码"><svg class="i"><use href="#i-eye"/></svg></button></div>
         <span class="hint">8–128 位，首尾不能是空格。修改密码会让其它已登录的浏览器下线。</span>
       </div>
       <div class="field">
         <label for="new-password2">再输入一次</label>
-        <div class="input"><input id="new-password2" type="password" autocomplete="new-password" maxlength="128" placeholder="与上面一致"><button class="btn ghost" type="button" data-reveal="new-password2" aria-label="显示密码"><svg class="i"><use href="#i-eye"/></svg></button></div>
+        <div class="input"><input id="new-password2" type="text" class="secret" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" maxlength="128" placeholder="与上面一致"><button class="btn ghost" type="button" data-reveal="new-password2" aria-label="显示密码"><svg class="i"><use href="#i-eye"/></svg></button></div>
       </div>
       <p class="form-err" id="setup-err" role="alert"></p>
       <div class="form-actions">
-        <button class="btn primary lg" id="setup-btn" type="submit">保存并进入</button>
+        <button class="btn primary lg" id="setup-btn" type="button">保存并进入</button>
         <button class="link" id="to-login" type="button">已有密码，返回登录</button>
       </div>
-    </form>
+    </div>
   </div>
 </section>
 
@@ -10463,8 +10464,15 @@ const op=(name,args,write=true)=>api('POST','/v1/accounts/'+encodeURIComponent(a
 
 /* ---------- views ---------- */
 function show(v){for(const id of ['view-lock','view-setup','view-app'])$(id).hidden=id!==v;$('who').hidden=v!=='view-app';$('change-pw-wrap').hidden=v!=='view-app';}
-function lock(msg){stopCapture();token='';show('view-lock');$('login-err').textContent=msg||'';if(!matchMedia('(pointer:coarse)').matches)setTimeout(()=>$('password').focus(),30);}
-document.querySelectorAll('[data-reveal]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.reveal);const on=i.type==='password';i.type=on?'text':'password';b.setAttribute('aria-label',on?'隐藏密码':'显示密码');i.focus();}));
+function lock(msg){stopCapture();token='';wipe();show('view-lock');$('login-err').textContent=msg||'';if(!matchMedia('(pointer:coarse)').matches)setTimeout(()=>$('password').focus(),30);}
+document.querySelectorAll('[data-reveal]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.reveal);const on=i.classList.toggle('shown');b.setAttribute('aria-label',on?'隐藏密码':'显示密码');b.setAttribute('aria-pressed',String(on));i.focus();}));
+/* Keep browser password managers out: no type=password, no <form>, random names, values wiped after use. */
+const secrets=[...document.querySelectorAll('input.secret')];
+const rnd=()=>'f'+crypto.getRandomValues(new Uint32Array(2)).join('');
+secrets.forEach(i=>{i.name=rnd();i.setAttribute('aria-describedby','');i.addEventListener('copy',e=>{if(!i.classList.contains('shown'))e.preventDefault();});i.addEventListener('cut',e=>{if(!i.classList.contains('shown'))e.preventDefault();});});
+const wipe=()=>secrets.forEach(i=>{i.value='';i.classList.remove('shown');});
+const onEnter=(ids,btn)=>ids.forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();$(btn).click();}}));
+onEnter(['password'],'login-btn');onEnter(['setup-key','new-password','new-password2'],'setup-btn');
 $('to-setup').addEventListener('click',()=>{show('view-setup');$('setup-err').textContent='';$('setup-key').focus();});
 $('to-login').addEventListener('click',()=>lock(''));
 $('change-pw').addEventListener('click',()=>{show('view-setup');$('setup-err').textContent='';$('setup-key').focus();});
@@ -10476,17 +10484,17 @@ async function boot(){
   lock('');
 }
 
-$('login-form').addEventListener('submit',async ev=>{
-  ev.preventDefault();const pw=$('password').value;const err=$('login-err');err.textContent='';
+$('login-btn').addEventListener('click',async()=>{
+  const pw=$('password').value;const err=$('login-err');err.textContent='';
   if(!pw){err.textContent='请输入密码。';return;}
   const b=$('login-btn');b.disabled=true;b.textContent='正在进入…';
   try{const r=await api('POST','/v1/session/login',{password:pw});token=r.token;$('password').value='';await enter();}
-  catch(e){err.textContent=msgFor(e);$('password').select();}
+  catch(e){err.textContent=msgFor(e);$('password').value='';$('password').focus();}
   finally{b.disabled=false;b.textContent='进入';}
 });
 
-$('setup-form').addEventListener('submit',async ev=>{
-  ev.preventDefault();const err=$('setup-err');err.textContent='';
+$('setup-btn').addEventListener('click',async()=>{
+  const err=$('setup-err');err.textContent='';
   const adm=$('setup-key').value.trim(),p1=$('new-password').value,p2=$('new-password2').value;
   if(adm.length<32){err.textContent='请粘贴完整的管理员令牌。';return;}
   if([...p1].length<8||[...p1].length>128||p1.trim()!==p1){err.textContent=ERR.weak_password;return;}
@@ -10610,7 +10618,7 @@ $('qr-file').addEventListener('change',async()=>{
   }catch(e){state('识别失败','err');note('无法读取这张图片，请换一张截图。',true);}
 });
 
-window.addEventListener('pagehide',()=>{stopCapture();token='';});
+window.addEventListener('pagehide',()=>{stopCapture();token='';wipe();});
 void boot();
 })();
 </script>
