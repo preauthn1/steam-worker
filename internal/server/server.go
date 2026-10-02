@@ -38,6 +38,7 @@ type Server struct {
 	ops   map[string]steam.Operation
 	html  []byte
 	csp   string
+	pw    *consoleAuth
 }
 
 var slug = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$`)
@@ -100,13 +101,16 @@ func New(c Config) (http.Handler, error) {
 	if e != nil {
 		return nil, e
 	}
-	return &Server{s, keys, copyOps, append([]byte(nil), c.HTML...), c.CSP}, nil
+	return &Server{s, keys, copyOps, append([]byte(nil), c.HTML...), c.CSP, newConsoleAuth(c.DataDir)}, nil
 }
 func (s *Server) Close() error { return s.store.Close() }
 func (s *Server) auth(r *http.Request, account, scope string) (principal, error) {
 	h := r.Header.Get("Authorization")
 	if !strings.HasPrefix(h, "Bearer ") || len(h)-7 < 32 || len(h)-7 > 512 {
 		return principal{}, apiError(401, "unauthorized")
+	}
+	if s.pw != nil && s.pw.check(h[7:]) {
+		return consolePrincipal, nil
 	}
 	hash := sha256.Sum256([]byte(h[7:]))
 	for _, p := range s.keys {
@@ -199,6 +203,9 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) (any, error) {
 	}
 	if path == "/health" && r.Method == "GET" {
 		return map[string]any{"ok": true}, nil
+	}
+	if strings.HasPrefix(path, "/v1/session/") {
+		return s.handleSession(r, path)
 	}
 	action, account, opName := "", "", ""
 	scope := "admin"
@@ -349,4 +356,49 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) (any, error) {
 		return nil, e
 	}
 	return map[string]any{"result": result}, nil
+}
+
+// handleSession serves the console password login. Set/change requires a
+// configured admin API key (never a password session), login is public but
+// rate limited, logout revokes the presented session.
+func (s *Server) handleSession(r *http.Request, path string) (any, error) {
+	switch {
+	case path == "/v1/session/password" && r.Method == "GET":
+		return map[string]any{"set": s.pw.isSet()}, nil
+	case path == "/v1/session/password" && r.Method == "POST":
+		p, e := s.auth(r, "", "admin")
+		if e != nil {
+			return nil, e
+		}
+		if p.ID == consolePrincipal.ID {
+			return nil, apiError(403, "admin_key_required")
+		}
+		body, e := readBody(r)
+		if e != nil {
+			return nil, e
+		}
+		pw, _ := body["password"].(string)
+		if e := s.pw.setPassword(pw); e != nil {
+			return nil, e
+		}
+		return map[string]any{"set": true}, nil
+	case path == "/v1/session/login" && r.Method == "POST":
+		body, e := readBody(r)
+		if e != nil {
+			return nil, e
+		}
+		pw, _ := body["password"].(string)
+		tok, exp, e := s.pw.login(pw)
+		if e != nil {
+			return nil, e
+		}
+		return map[string]any{"token": tok, "expires_at": exp.Unix()}, nil
+	case path == "/v1/session/logout" && r.Method == "POST":
+		h := r.Header.Get("Authorization")
+		if strings.HasPrefix(h, "Bearer ") {
+			s.pw.logout(h[7:])
+		}
+		return map[string]any{"ok": true}, nil
+	}
+	return nil, apiError(404, "not_found")
 }

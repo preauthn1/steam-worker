@@ -13,8 +13,6 @@ No runtime dependency from these projects is bundled by this Worker. Attribution
 
 Steam is a trademark of Valve Corporation. This project is not affiliated with or endorsed by Valve.
 
-The self-contained browser QR renderer bundles the MIT-licensed Project Nayuki QR Code generator. Its complete copyright and license notice is retained in `src/console.ts`. QR challenges are rendered locally and are not sent to third-party image services.
-
 ## jsQR (QR code reading)
 
 The console bundles the MIT-licensed jsQR library (dist/jsQR.js, vendored

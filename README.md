@@ -12,6 +12,16 @@
 
 真实账号登录、资金操作及扫码批准需独立验收。开发阶段仅合成协议测试和公开只读请求，不把它们冒充真实资金操作成功。
 
+## 网页控制台
+
+网页只做一件事：批准电脑上 Steam 客户端显示的登录二维码。
+
+1. 首次打开：用管理员 API 令牌授权，设置你自己的访问密码（8–128 位）。服务端只保存 PBKDF2-SHA256 哈希（`DATA_DIR/console-password.json`）。
+2. 之后用这个密码登录，得到 12 小时有效的内存会话；15 分钟内失败 10 次会暂时锁定；退出或修改密码会让会话立即失效。
+3. 共享 Steam 登录窗口，页面在本机识别二维码 → 显示登录设备 → 批准。二维码过期会自动跳过并等待新码。也可以粘贴二维码链接或上传截图。
+
+会话接口：`GET/POST /v1/session/password`（设置需管理员 API 令牌）、`POST /v1/session/login`、`POST /v1/session/logout`。其余 HTTP API 不变。
+
 ## 安全
 
 - 仅监听 127.0.0.1，配合独立 Tunnel。
@@ -32,4 +42,4 @@ GOMAXPROCS=2 go test -p=1 ./internal/steam ./internal/server
 
 ## 许可证
 
-MIT。协议参考 aiosteampy、node-steam-session；浏览器包含 MIT Project Nayuki QR 编码器，原许可证保留。
+MIT。协议参考 aiosteampy、node-steam-session；浏览器内置 MIT jsQR 解码器，原许可证保留。

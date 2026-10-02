@@ -6,7 +6,7 @@
 web
 
 ## Product Purpose
-Operate account-scoped Steam API workflows through a lightweight Worker console: select an account, sign in when supported, inspect inventory and prices, and deliberately review trading, market and confirmation actions.
+Approve the QR login shown by the desktop Steam client, from a browser, without a phone. The console is password-protected with an owner-chosen password and contains nothing else.
 
 ## Operating Context
 Desktop and mobile have equal priority. The frontend language is Simplified Chinese; exact API operation names and field identifiers remain unchanged for interoperability. The console consumes the authenticated `/v1/operations` registry rather than inventing backend capabilities. Account operations use `/v1/accounts/:slug/operations/:name` with `{arguments}`.
@@ -16,7 +16,8 @@ Desktop and mobile have equal priority. The frontend language is Simplified Chin
 - API bearer token lives only in page memory. Password inputs clear when submitted. Secret response fields must not be displayed.
 - Every mutation requires a second confirmation dialog with visible amount, item and recipient summary and a mandatory checkbox.
 - Each intentional write uses a new idempotency key. Only an explicit retry may reuse a key; mutations are never retried automatically.
-- Login challenges render locally as QR using the MIT Project Nayuki encoder, with a validated challenge link fallback. Login handles and bounded, cancellable polling are supported; session-write polling requires an explicit batch authorization.
+- QR decoding happens locally (BarcodeDetector, vendored MIT jsQR fallback); captured frames never leave the browser.
+- Console access uses an owner-chosen password (PBKDF2 hash on disk, short-lived in-memory sessions); setting it requires an admin API key.
 - Unsupported backend features are labeled unavailable, not simulated.
 
 ## Brand Commitments
