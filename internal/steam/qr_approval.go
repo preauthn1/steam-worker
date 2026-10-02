@@ -13,12 +13,40 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
 var qrURLPattern = regexp.MustCompile(`^https://s\.team/q/(0|[1-9][0-9]{0,4})/(0|[1-9][0-9]{0,19})$`)
 
+// normalizeQRInput strips leading/trailing Unicode whitespace and format
+// characters (Cf: BOM, word joiner, zero-width, directional marks) that
+// clipboard/IME sources commonly inject, plus wrapping quotes or angle
+// brackets from chat-app copies. Interior characters are left untouched:
+// a polluted middle means the content is genuinely wrong and stays rejected.
+func normalizeQRInput(raw string) string {
+	trimmed := strings.TrimFunc(raw, func(r rune) bool {
+		return unicode.IsSpace(r) || unicode.Is(unicode.Cf, r)
+	})
+	for len(trimmed) >= 2 {
+		first, last := trimmed[:1], trimmed[len(trimmed)-1:]
+		if (first == "\"" && last == "\"") || (first == "<" && last == ">") {
+			trimmed = trimmed[1 : len(trimmed)-1]
+			continue
+		}
+		firstR, lastR := []rune(trimmed)[0], []rune(trimmed)[len([]rune(trimmed))-1]
+		if firstR == '\u201c' && lastR == '\u201d' {
+			trimmed = string([]rune(trimmed)[1 : len([]rune(trimmed))-1])
+			continue
+		}
+		break
+	}
+	return trimmed
+}
+
+
 func qrChallenge(raw string) (uint16, string, error) {
+	raw = normalizeQRInput(raw)
 	m := qrURLPattern.FindStringSubmatch(raw)
 	if m == nil {
 		return 0, "", fail(400, "invalid_arguments")

@@ -10915,6 +10915,18 @@ function operationLabel(name) { return (operationLabels[name] || '服务器操�
 function fieldLabel(name) { return (fieldLabels[name] || '自定义参数') + ' · ' + name; }
 function scopeLabel(scope) { return ({read:'读取权限',write:'写入权限',admin:'管理员权限'}[scope] || '服务器权限') + '（' + scope + '）'; }
 function enumLabel(value) { const labels = {web:'网页',mobile:'手机',device:'设备验证码',email:'邮件验证码'}; return Object.prototype.hasOwnProperty.call(labels,value) ? labels[value] + ' · ' + value : String(value); }
+const errorTexts = {
+  'invalid_arguments': '参数格式不符。请检查各字段：链接须为 https://s.team/q/数字/数字 的完整形式，注意粘贴时可能带上的空格、引号或换行。',
+  'account_not_found': '账户尚未创建。请先点击“创建账户”，或从列表选择已有账户。',
+  'mobile_session_required': '需要手机平台会话。请先用“使用密码登录”（platform 选 mobile）完成登录。',
+  'session_expired': '会话已过期。请重新登录。',
+  'shared_secret_required': '缺少 Steam 令牌共享密钥。请先完成“开通手机令牌 2FA”。',
+  'invalid_mobile_access_token': '手机平台访问令牌无效。请重新登录。',
+  'upstream_eresult_88': 'Steam 判定动态验证码不匹配。请稍候重试。',
+  'upstream_eresult_89': 'Steam 激活验证码不匹配。请检查邮箱收到的最新验证码。',
+  'upstream_eresult_5': 'Steam 判定账号或密码错误。',
+  'upstream_rate_limited': 'Steam 限流。请稍后再试。'
+};
 function errorMessage(error) { if (error.name === 'AbortError') return '请求超时或已取消。请检查状态后手动操作。'; if (error.name === 'TypeError') return '请求未完成。请检查网络连接和服务器状态。'; if (error.name === 'SyntaxError') return '服务器响应不是有效的 JSON。请检查服务器状态。'; return /[\u3400-\u9fff]/.test(error.message || '') ? error.message : '操作未完成。请检查参数、账户权限和服务器状态。'; }
 function scrub(value, depth = 0) {
   if (depth > 12) return '[已达到嵌套深度限制]';
@@ -10937,7 +10949,12 @@ async function request(intent, signal) {
   try {
     const response = await fetch(intent.path, {method:intent.method, headers, body:intent.body === undefined ? undefined : JSON.stringify(intent.body), cache:'no-store', redirect:'error', signal:controller.signal});
     const data = await response.json();
-    if (!response.ok) { const error = Error('请求失败（HTTP ' + response.status + '）。请检查账户权限、参数和服务器状态。'); error.httpStatus = response.status; throw error; }
+    if (!response.ok) {
+      const code = (data && data.error && data.error.code) || '';
+      const hint = errorTexts[code] || (code ? 'Steam 返回错误 ' + code.replace(/^upstream_eresult_(\d+)$/, '码 $1') + '。多为二维码已过期或不匹配，请重新扫码。' : '请检查参数、账户权限和服务器状态。');
+      const error = Error('请求失败（HTTP ' + response.status + (code ? ' · ' + code : '') + '）：' + hint);
+      error.httpStatus = response.status; error.code = code; throw error;
+    }
     return data;
   } finally { clearTimeout(timeout); if (signal) signal.removeEventListener('abort',abort); }
 }
@@ -11001,7 +11018,7 @@ function renderFields() {
     let input;
     if (Array.isArray(schema.enum)) { input = document.createElement('select'); if (!op.schema.required.includes(name)) {const blank=document.createElement('option');blank.value='';blank.textContent='不提供';input.append(blank);} for (const value of schema.enum) { const option=document.createElement('option');option.value=String(value);option.textContent=enumLabel(value);input.append(option); } }
     else if (schema.type === 'array' || schema.type === 'object') { input=document.createElement('textarea'); input.rows=6; input.placeholder=schema.type === 'array' ? '[]' : '{}'; }
-    else { input = document.createElement('input'); input.type = schema.type === 'boolean' ? 'checkbox' : schema.type === 'integer' || schema.type === 'number' ? 'number' : secretKey.test(name) ? 'password' : 'text'; }
+    else { input = document.createElement('input'); const sensitive = secretKey.test(name) && !/^qr_url$/.test(name); input.type = schema.type === 'boolean' ? 'checkbox' : schema.type === 'integer' || schema.type === 'number' ? 'number' : sensitive ? 'password' : 'text'; if(name==='qr_url'){input.inputMode='url';input.autocapitalize='off';input.autocorrect='off';} }
     input.id = id; input.name = name; input.dataset.argument = name; input.dataset.type = schema.type; input.required = schema.type !== 'boolean' && op.schema.required.includes(name); input.autocomplete='off'; input.spellcheck=false;
     if (schema.type === 'integer') input.step='1'; if (typeof schema.minimum === 'number') input.min=String(schema.minimum); if (typeof schema.maximum === 'number') input.max=String(schema.maximum); if (typeof schema.maxLength === 'number') input.maxLength=schema.maxLength;
     if (name === 'login_handle' && loginHandle) input.value = loginHandle;
@@ -11020,7 +11037,7 @@ function readArguments() {
     const submittedValue=values.get(input);
     const name = input.dataset.argument, type = input.dataset.type;
     if (type === 'boolean') { if (input.checked || op.schema.required.includes(name)) args[name]=input.checked; }
-    else if (submittedValue !== '') { let value; if(type === 'array' || type === 'object') { try {value=JSON.parse(submittedValue);}catch {throw Error('请为“'+fieldLabel(name)+'”输入有效的 JSON。');} if(type === 'array' ? !Array.isArray(value) : !value || typeof value !== 'object' || Array.isArray(value)) throw Error('“'+fieldLabel(name)+'”需要 JSON '+(type === 'array' ? '数组' : '对象')+'。'); } else value = type === 'integer' || type === 'number' ? Number(submittedValue) : submittedValue; if (typeof value === 'number' && (!Number.isFinite(value) || (type === 'integer' && !Number.isSafeInteger(value)))) throw Error('请为“' + fieldLabel(name) + '”输入有效的数字。'); args[name]=value; }
+    else if (submittedValue !== '') { let value; const trimmed = name==='qr_url' ? submittedValue.trim() : submittedValue; if(type === 'array' || type === 'object') { try {value=JSON.parse(submittedValue);}catch {throw Error('请为“'+fieldLabel(name)+'”输入有效的 JSON。');} if(type === 'array' ? !Array.isArray(value) : !value || typeof value !== 'object' || Array.isArray(value)) throw Error('“'+fieldLabel(name)+'”需要 JSON '+(type === 'array' ? '数组' : '对象')+'。'); } else value = type === 'integer' || type === 'number' ? Number(trimmed) : trimmed; if (typeof value === 'number' && (!Number.isFinite(value) || (type === 'integer' && !Number.isSafeInteger(value)))) throw Error('请为“' + fieldLabel(name) + '”输入有效的数字。'); args[name]=value; }
   }
   // Clear credentials before any confirmation or network dispatch.
   for (const input of $('fields').querySelectorAll('input[type=password]')) input.value='';
@@ -11060,7 +11077,9 @@ async function dispatch(intent, signal) {
 }
 function manualIntent(op,args) { return {name:op.name, account:$('account').value.trim(), method:'POST', path:accountPath()+'/operations/'+encodeURIComponent(op.name), body:{arguments:args}, mutating:op.mutating, sensitive:Object.keys(args).some(k=>secretKey.test(k)), key:op.mutating ? crypto.randomUUID() : undefined}; }
 function discardPending() { if (pendingWrite) pendingWrite.body=undefined; pendingWrite=null; }
-$('operation-form').addEventListener('submit',event=>{event.preventDefault(); if (busy) return; cancelPoll(); retryWrite=null; try {const op=registry.find(x=>x.name===$('operation').value); if (!op) throw Error('请选择操作。'); const intent=manualIntent(op,readArguments()); if(intent.mutating) reviewWrite(intent); else void dispatch(intent);} catch(error) {status(errorMessage(error),'error');} });
+$('operation-form').addEventListener('submit',event=>{event.preventDefault(); if (busy) return; cancelPoll(); retryWrite=null; try {const op=registry.find(x=>x.name===$('operation').value); if (!op) throw Error('请选择操作。'); const args=readArguments();
+      if(op.name==='session.qr_inspect' && args.qr_url && !/^https:\/\/s\.team\/q\/(0|[1-9][0-9]{0,4})\/(0|[1-9][0-9]{0,19})$/.test(args.qr_url)) { status('二维码链接格式不符：需要 https://s.team/q/数字/数字 的完整形式。请检查是否多复制了空格、引号或截断。','error'); return; }
+      const intent=manualIntent(op,args); if(intent.mutating) reviewWrite(intent); else void dispatch(intent);} catch(error) {status(errorMessage(error),'error');} });
 $('acknowledge').addEventListener('change',()=>{$('confirm-write').disabled=!$('acknowledge').checked;});
 $('confirm-write').addEventListener('click',()=>{if (!pendingWrite || !$('acknowledge').checked || busy) return; const intent=pendingWrite; pendingWrite=null; $('write-dialog').close(); if(intent.polling) void startPolling(); else void dispatch(intent);});
 $('cancel-write').addEventListener('click',()=>{$('write-dialog').close();discardPending();});
